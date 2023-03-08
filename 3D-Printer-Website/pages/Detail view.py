@@ -1,4 +1,5 @@
 import streamlit as st
+from pygments.lexers.textfmts import TodotxtLexer
 
 product_name = "Lion Model"
 
@@ -30,6 +31,8 @@ form.color_picker("Pick a color")
 pieces = form.number_input("Quantity", min_value=1, max_value=100, value=1, help="How many pieces do you want to print?")
 #form.form_submit_button("Buy")
 
+# Buy-Button
+# ToDo: Replace warning with dialogue box with Yes / No option
 if form.form_submit_button("Buy", help="Click here to buy the selected material"):
         # Prompt the user to confirm the order
         if st.warning("Do you want to continue ordering?"):
