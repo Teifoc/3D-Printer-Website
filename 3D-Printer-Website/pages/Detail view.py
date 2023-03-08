@@ -1,5 +1,4 @@
 import streamlit as st
-from pygments.lexers.textfmts import TodotxtLexer
 
 product_name = "Lion Model"
 
