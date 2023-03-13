@@ -1,4 +1,5 @@
 import streamlit as st
+import webbrowser
 
 product_name = "Lion Model"
 
@@ -25,20 +26,27 @@ st.subheader("Optional parameters")
 # Creating form for the ordering process
 form = st.form("Ordering form")
 
-form.selectbox("Material", ["PLA", "ABS", "PETG", "Wood", "Metal", "Other"], help= "Select the material you want to print with")
+material_options = ["PLA", "ABS", "PETG", "Wood", "Metal", "Other"]
+
+selected_material = form.selectbox("Material", material_options, help= "Select the material you want to print with", key="material")
 form.color_picker("Pick a color")
 pieces = form.number_input("Quantity", min_value=1, max_value=100, value=1, help="How many pieces do you want to print?")
+
+
+
 #form.form_submit_button("Buy")
 
-# Buy-Button
-# ToDo: Replace warning with dialogue box with Yes / No option
-if form.form_submit_button("Buy", help="Click here to buy the selected material"):
-        # Prompt the user to confirm the order
-        if st.warning("Do you want to continue ordering?"):
-            # If the user confirms, go to the "Editing Models" page
-            st.experimental_set_query_params(page="editing_models")
-        else:
-            # If the user cancels, go back to the home page
-            st.experimental_set_query_params(page="home")
-            
-
+# ToDo: Links to the webpages do not work, when cklicking on the button. We have to evaluate and fix that. I don't know whats the reason fpr that issue is. //Maximilian124
+       
+if form.form_submit_button("Buy", help="Click here to buy the selected material"):     
+    # Prompt the user to confirm the order
+    st.warning("Do you want to continue ordering?")
+    url_yes = "https://3d-printer-website.streamlit.app/Editing_Models"
+    url_no = "https://3d-printer-website.streamlit.app/"
+    # show No and Yes Button
+    if form.form_submit_button("Yes", "Click here to buy the selected material." +selected_material):
+        webbrowser.open(url_yes)
+    else:
+        if form.form_submit_button("No"):
+            webbrowser.open(url_no)
+        
