@@ -1,8 +1,8 @@
 <?php
-    $host = 'your-database-endpoint.rds.amazonaws.com';
-    $username = 'your-username';
-    $password = 'your-password';
-    $dbname = 'your-database-name';
+    $host = 'database-1.c8eew8ixqxd2.eu-north-1.rds.amazonaws.com';
+    $username = 'Wxz';
+    $password = 'Zhenzz021127.';
+    $dbname = 'website_3Dprint';
 
     // 创建数据库连接
     $conn = new mysqli($host, $username, $password, $dbname);
