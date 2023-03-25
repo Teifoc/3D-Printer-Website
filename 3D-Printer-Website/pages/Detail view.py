@@ -32,21 +32,25 @@ selected_material = form.selectbox("Material", material_options, help= "Select t
 form.color_picker("Pick a color")
 pieces = form.number_input("Quantity", min_value=1, max_value=100, value=1, help="How many pieces do you want to print?")
 
-
-
-#form.form_submit_button("Buy")
-
 # ToDo: Links to the webpages do not work, when cklicking on the button. We have to evaluate and fix that. I don't know whats the reason fpr that issue is. //Maximilian124
-       
+# Outside of the if it works fine...
 if form.form_submit_button("Buy", help="Click here to buy the selected material"):     
     # Prompt the user to confirm the order
     st.warning("Do you want to continue ordering?")
     url_yes = "https://3d-printer-website.streamlit.app/Editing_Models"
     url_no = "https://3d-printer-website.streamlit.app/"
     # show No and Yes Button
-    if form.form_submit_button("Yes", "Click here to buy the selected material." +selected_material):
-        webbrowser.open(url_yes)
-    else:
-        if form.form_submit_button("No"):
-            webbrowser.open(url_no)
-        
+    button_clicked = False
+    if st.button("Yes"):
+         button_clicked = True
+         webbrowser.open_new_tab(url_yes)
+    if st.button("No"):
+        button_clicked = True
+        webbrowser.open_new_tab(url_no)
+    if not button_clicked:
+        st.info("Please click on Yes or No to continue.")
+
+
+# Test outside of the if above:
+if st.button("Yes"):
+    webbrowser.open_new_tab("https://3d-printer-website.streamlit.app/Editing_Models") 
