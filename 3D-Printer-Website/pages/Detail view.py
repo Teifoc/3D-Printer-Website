@@ -1,6 +1,8 @@
 import streamlit as st
 import webbrowser
-#import mysql.connector
+import secret as s
+
+s.
 
 product_name = "Lion Model"
 
@@ -50,7 +52,7 @@ confirm_order = form.checkbox("Yes, I want to continue ordering.", key="confirm_
 cancel_order = form.checkbox("No, I don't want to continue ordering.", key="cancel_order")
 if confirm_order:
     if form.form_submit_button("Confirm", help="Click here to buy the selected material"):
-        # Connect to MySQL database (ToDo: Implmentation of the database
+        # Connect to Mongo database (ToDo: Implmentation of the database
         
         # mydb = mysql.connector.connect(
         #     host="localhost",
