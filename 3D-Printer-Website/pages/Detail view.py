@@ -32,8 +32,13 @@ material_options = ["PLA", "ABS", "PETG", "Wood", "Metal", "Other"]
 selected_material = form.selectbox("Material", material_options, help= "Select the material you want to print with", key="material")
 form.color_picker("Pick a color")
 pieces = form.number_input("Quantity", min_value=1, max_value=100, value=1, help="How many pieces do you want to print?")
+infill = form.number_input("Infill", 0, 100, 1, help="Select here the percentage of the infill (values from 0 to 100 % are allowed)")
 
-# ToDo: Links to the webpages do not work, when clicking on the button. We have to evaluate and fix that.
+
+form.subheader("Details of Printing")
+form.text("Time: Placeholder for the estimated printtime")
+form.text("Needed material: Placeholder for the needed material")
+form.text("Price for the model: Placeholder for the price")
 
 # Set default values
 url_yes = "https://3d-printer-website.streamlit.app/Editing_Models"
