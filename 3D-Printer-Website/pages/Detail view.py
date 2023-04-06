@@ -125,7 +125,7 @@ if confirm_order:
         # Connect to Mongo database
         s.client
         db = s.client.Website
-        s.db.Queue.drop()
+        
 
         # Prepare data for the new document
         data = {
@@ -134,9 +134,11 @@ if confirm_order:
             'quantity': pieces,
             'infill': infill
         }
+        
+        s.db.Models.insert_one(data)
 
         # Insert the new document into the collection
-        result = s.db.Queue.orders_collection.insert_one(data)
+        result = s.db.Orders.insert_one(data)
 
         # Print success message with the inserted ID
         st.success("Order created successfully with ID: {}".format(result.inserted_id))
