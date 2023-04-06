@@ -135,7 +135,7 @@ if confirm_order:
             'infill': infill
         }
         
-        s.db.Models.insert_one(data)
+        #s.db.Models.insert_one(data)
 
         # Insert the new document into the collection
         result = s.db.Orders.insert_one(data)
