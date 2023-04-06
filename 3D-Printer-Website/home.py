@@ -10,15 +10,18 @@ import secret as s
 
 st.markdown("<h1 style='text-align: center; color: red;'>3D-Printer Website</h1>", unsafe_allow_html=True)
 
-st.header("Welcome to the 3D-Printer Website")
 
 
-st.info("Info: To view the 3D-Printer Queue just go to the Queue Page")
+with st.expander("Info about Website"):
+    st.header("Welcome to the 3D-Printer Website")
+    st.text("Here you can order your 3D-Printed Models")    
+    st.info("Info: To view the 3D-Printer Queue just go to the Queue Page")
 
-st.text("Here you can order your 3D-Printed Models")
+
+
+st.title("Models Overview")
 
 #hier kommt eine Schleife hin welche alle Modelle aus der Datenbank ausliest und dann die Modelle in einer Liste anzeigt
-#//ier kommt eine Schleife hin welche alle Modelle aus der Datenbank (MongoDB) ausliest und dann die Modelle in einer Liste anzeigt 
 st.subheader("Here you can see all the Models which are available for ordering")
 st.text("Click on the Model to get more information about it")
 col1, col2, col3, col4 = st.columns(4)

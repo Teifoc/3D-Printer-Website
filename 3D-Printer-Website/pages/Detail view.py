@@ -2,7 +2,7 @@ import streamlit as st
 import webbrowser
 import secret as s
 
-s.
+
 
 product_name = "Lion Model"
 
