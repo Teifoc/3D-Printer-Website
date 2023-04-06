@@ -122,7 +122,7 @@ confirm_order = form.checkbox("Yes, I want to continue ordering.", key="confirm_
 
 if confirm_order:
     if form.form_submit_button("Confirm", help="Click here to buy the selected material"):
-        # Connect to Mongo database (ToDo: Implmentation of the database)
+        # Connect to Mongo database
         s.client
         db = s.client.Website
         s.db.Queue.drop()
