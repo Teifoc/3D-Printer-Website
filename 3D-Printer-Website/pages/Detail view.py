@@ -1,7 +1,7 @@
+"""
 import streamlit as st
 import webbrowser
 import secret as s
-
 
 
 product_name = "Lion Model"
@@ -54,21 +54,27 @@ if confirm_order:
     if form.form_submit_button("Confirm", help="Click here to buy the selected material"):
         # Connect to Mongo database (ToDo: Implmentation of the database
         
-        # mydb = mysql.connector.connect(
-        #     host="localhost",
-        #     user="username",
-        #     password="password",
-        #     database="database_name"
-        # )
-        #
-        # # Create a cursor object
-        # mycursor = mydb.cursor()
-        #
-        # # Insert form data into the database
-        # sql = "INSERT INTO orders (material, color, quantity) VALUES (%s, %s, %s)"
-        # val = (selected_material, form.color_picker("Pick a color"), pieces)
-        # mycursor.execute(sql, val)
-        # mydb.commit()
+        s.client
+        db = s.client.Website
+        
+        s.db.Queue.drop()
+        
+        # Prepare data for the new document
+        data = {
+            'material': selected_material,
+            'color': form.color_picker("Pick a color"),
+            'quantity': pieces,
+            'infill': infill
+            }
+        
+        # Insert the new document into the collection
+        result = s.db.Queue.orders_collection.insert_one(data)
+        
+        # Print success message with the inserted ID
+        print("Document created successfully with ID:", result.inserted_id)
+        
+        s.client.close()
+        
 
         # Open the URL
         webbrowser.open(url_yes)
@@ -76,7 +82,69 @@ else:
     if form.form_submit_button("Confirm", help="Click here to buy the selected material") and cancel_order:
         # Open the URL
         webbrowser.open(url_no)
+"""
 
+import streamlit as st
+import webbrowser
+import secret as s
+
+product_name = "Lion Model"
+
+st.title("Here you can get more info about the Product")
+
+st.header("Product Name: "+product_name)
+col_left, col_right = st.columns(2)
+
+col_left.subheader("Product Image")
+col_left.image("https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", use_column_width=True)
+
+st.subheader("Optional parameters")
+# Creating form for the ordering process
+form = st.form(key="Ordering form")
+
+material_options = ["PLA", "ABS", "PETG", "Wood", "Metal", "Other"]
+
+selected_material = form.selectbox("Material", material_options, help="Select the material you want to print with", key="material")
+color_picker = form.color_picker("Pick a color")
+pieces = form.number_input("Quantity", min_value=1, max_value=100, value=1, help="How many pieces do you want to print?")
+infill = form.number_input("Infill", 0, 100, 1, help="Select here the percentage of the infill (values from 0 to 100 % are allowed)")
+
+form.subheader("Details of Printing")
+form.text("Time: Placeholder for the estimated printtime")
+form.text("Needed material: Placeholder for the needed material")
+form.text("Price for the model: Placeholder for the price")
+
+# Set default values
+url_yes = "https://3d-printer-website.streamlit.app/Editing_Models"
+url_no = "https://3d-printer-website.streamlit.app/"
+
+# Add checkbox input fields for "Yes" and "No" options
+confirm_order = form.checkbox("Yes, I want to continue ordering.", key="confirm_order")
+
+if confirm_order:
+    if form.form_submit_button("Confirm", help="Click here to buy the selected material"):
+        # Connect to Mongo database
+        s.client
+        db = s.client.Website
+        
+
+        # Prepare data for the new document
+        data = {
+            'material': selected_material,
+            'color': color_picker,
+            'quantity': pieces,
+            'infill': infill
+        }
+        
+        #s.db.Models.insert_one(data)
+
+        # Insert the new document into the collection
+        result = s.db.Orders.insert_one(data)
+
+        # Print success message with the inserted ID
+        st.success("Order created successfully with ID: {}".format(result.inserted_id))
+else:
+    form.form_submit_button("Confirm", help="Click here to buy the selected material")
 
 
 
