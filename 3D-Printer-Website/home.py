@@ -1,5 +1,69 @@
 import streamlit as st
+
+hide_streamlit_style = """
+                <style>
+                div[data-testid="stToolbar"] {
+                visibility: hidden;
+                height: 0%;
+                position: fixed;
+                }
+                div[data-testid="stDecoration"] {
+                visibility: hidden;
+                height: 0%;
+                position: fixed;
+                }
+                div[data-testid="stStatusWidget"] {
+                visibility: hidden;
+                height: 0%;
+                position: fixed;
+                }
+                #MainMenu {
+                visibility: hidden;
+                height: 0%;
+                }
+                header {
+                visibility: hidden;
+                height: 0%;
+                }
+                footer {
+                visibility: hidden;
+                height: 0%;
+                }
+                </style>
+                """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+
+def hide_anchor_link():
+    st.markdown(
+        body="""
+        <style>
+            h1 > div > a {
+                display: none;
+            }
+            h2 > div > a {
+                display: none;
+            }
+            h3 > div > a {
+                display: none;
+            }
+            h4 > div > a {
+                display: none;
+            }
+            h5 > div > a {
+                display: none;
+            }
+            h6 > div > a {
+                display: none;
+            }
+        </style>
+        """,
+         unsafe_allow_html=True,
+)
+
+hide_anchor_link()
+
 import secret as s
+
 
 
 
@@ -9,6 +73,7 @@ import secret as s
 #db.authenticate(s.db_username, s.db_password)
 
 st.markdown("<h1 style='text-align: center; color: red;'>3D-Printer Website</h1>", unsafe_allow_html=True)
+
 
 
 
