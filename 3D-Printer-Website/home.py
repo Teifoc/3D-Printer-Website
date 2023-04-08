@@ -50,15 +50,20 @@ for i in range(0, len(models), 4):
         if i+j < len(models):
             model = models[i+j]
             with row[j]:
-                st.image(model[1], use_column_width=True)
-                st.text(model[0])
-                st.text("Price: {}".format(model[2]))
-                st.text("Time: {}".format(model[3]))
-                if st.button("Order "+str(model[0])):
-                    st.success("You ordered the {} Model".format(model[0]))
-                if st.button("More Info about "+str(model[0])+" Model"):
-                    #st.set_query_params("/Detail_view/"+model=model[0])
-                    st.write("https://share.streamlit.io/3d-printer-website/3d-printer-website/main/Detail_view.py?model="+model[0])
+                form = st.form(key=model[0])
+                with form:
+                    st.image(model[1], use_column_width=True)
+                    st.text(model[0])
+                    st.text("Price: {}".format(model[2]))
+                    st.text("Time: {}".format(model[3]))
+                    test = form.form_submit_button("Add", help="Click here to add a Moddel to your Shopping Cart")
+                    if test:
+                        st.success("You added the {} to your shopping cart".format(model[0]))
+                    # wenn dieser knopf gedrück wird soll es zum shopping cart hinzugefügt werden
+
+                    #if st.button("More Info about "+str(model[0])+" Model"):
+                        #st.set_query_params("/Detail_view/"+model=model[0])
+                    #    st.write("https://share.streamlit.io/3d-printer-website/3d-printer-website/main/Detail_view.py?model="+model[0])
 
 
 st.sidebar.header("Order Form")
