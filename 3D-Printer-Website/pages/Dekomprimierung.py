@@ -15,18 +15,18 @@ db = s.client.get_database('Website')
 collection = db['Models']
 
 # Dummy-Modelle
-models = [
-    {
-        "name": "Modell 1",
-        "picture": gzip.compress(b"Dummy picture data"),
-        "stlFile": gzip.compress(b"Dummy STL file data")
-    },
-    {
-        "name": "Modell 2",
-        "picture": gzip.compress(b"Dummy picture data"),
-        "stlFile": gzip.compress(b"Dummy STL file data")
-    }
-]
+# models = [
+#     {
+#         "name": "Modell 1",
+#         "picture": gzip.compress(b"Dummy picture data"),
+#         "stlFile": gzip.compress(b"Dummy STL file data")
+#     },
+#     {
+#         "name": "Modell 2",
+#         "picture": gzip.compress(b"Dummy picture data"),
+#         "stlFile": gzip.compress(b"Dummy STL file data")
+#     }
+# ]
 
 # Cache für die Datenbankabfrage
 model_cache = {}
