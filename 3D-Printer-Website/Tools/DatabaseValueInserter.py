@@ -1,6 +1,5 @@
 import gzip
 from tkinter import Tk, Label, Entry, Button, filedialog
-import pymongo
 import secret as s
 
 # Verbindung zur MongoDB herstellen
