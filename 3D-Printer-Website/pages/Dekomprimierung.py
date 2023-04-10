@@ -183,8 +183,11 @@ def main():
     # STL-File dekomprimieren und als PyVista-Gitter laden
     st.write("3D-Modell:")
     stl_file_data = decompress_data(model['stlFile'])
-    mesh = trimesh.load(BytesIO(stl_file_data))
+    # mesh = trimesh.load(BytesIO(stl_file_data))
+    # grid = pv.PolyData(mesh.vertices, mesh.faces)
+    mesh = trimesh.load(BytesIO(stl_file_data), file_type="stl")
     grid = pv.PolyData(mesh.vertices, mesh.faces)
+
 
     # PyVista-Visualisierung anzeigen
     plotter = pv.Plotter()
