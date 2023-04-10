@@ -139,7 +139,7 @@ if confirm_order:
         #s.db.Models.insert_one(data)
 
         # Insert the new document into the collection
-        result = s.db.Orders.insert_one(data)
+        result = db.Orders.insert_one(data)
 
         # Print success message with the inserted ID
         st.success("Order created successfully with ID: {}".format(result.inserted_id))
