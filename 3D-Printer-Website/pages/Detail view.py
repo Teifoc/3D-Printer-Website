@@ -88,6 +88,12 @@ import streamlit as st
 import webbrowser
 import secret as s
 
+
+# Connect to Mongo database
+s.client
+db = s.client.Website
+
+
 product_name = "Lion Model"
 
 st.title("Here you can get more info about the Product")
@@ -111,7 +117,6 @@ infill = form.number_input("Infill", 0, 100, 1, help="Select here the percentage
 
 form.subheader("Details of Printing")
 form.text("Time: Placeholder for the estimated printtime")
-form.text("Needed material: Placeholder for the needed material")
 form.text("Price for the model: Placeholder for the price")
 
 # Set default values
@@ -123,10 +128,6 @@ confirm_order = form.checkbox("Yes, I want to continue ordering.", key="confirm_
 
 if confirm_order:
     if form.form_submit_button("Confirm", help="Click here to buy the selected material"):
-        # Connect to Mongo database
-        s.client
-        db = s.client.Website
-        
 
         # Prepare data for the new document
         data = {
