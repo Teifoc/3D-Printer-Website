@@ -5,6 +5,7 @@ from PIL import Image
 import trimesh
 import pyvista as pv
 from stpyvista import stpyvista
+import io
 import secret as s
 
 
