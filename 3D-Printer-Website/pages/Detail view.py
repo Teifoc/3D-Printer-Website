@@ -57,6 +57,8 @@ if model_data:
 else:
     st.error("Model image not found in database.")
     st.stop()
+
+description = model_data['description']
     
 st.subheader("Details of Printing")
 # Retrieve printtime and price data from the database
@@ -64,6 +66,7 @@ printtime = model_data['printTime']
 price = model_data['price']
 st.text("Time: {}".format(printtime) +" hour(s)")
 st.text("Price for the model: {}".format(price) +" €")
+st.text("Description: {}".format(description))
 
 
 st.subheader("Optional parameters")

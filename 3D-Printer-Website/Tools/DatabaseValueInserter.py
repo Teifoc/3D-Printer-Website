@@ -32,10 +32,12 @@ def upload_model_data():
     name = name_entry.get()
     preis = preis_entry.get()
     printTime = produktionsdauer_entry.get()
+    description = description_entry.get()
 
     # Daten in die MongoDB hochladen
     model_data = {
         "name": name,
+        "description": description,
         "picture": picture_data_compressed,
         "stlFile": stl_file_data_compressed,
         "price": preis,
@@ -75,10 +77,15 @@ produktionsdauer_label.grid(row=3, column=0, padx=10, pady=10)
 produktionsdauer_entry = Entry(root)
 produktionsdauer_entry.grid(row=3, column=1, padx=10, pady=10)
 
+description_label = Label(root, text="Description")
+description_label.grid(row=4, column=0, padx=10, pady=10)
+description_entry = Entry(root)
+description_entry.grid(row=4, column=1, padx=10, pady=10)
+
 submit_button = Button(root, text="Daten hochladen", command=upload_model_data)
-submit_button.grid(row=4, column=0, padx=10, pady=10)
+submit_button.grid(row=5, column=0, padx=10, pady=10)
 
 result_label = Label(root, text="")
-result_label.grid(row=4, column=1, padx=10, pady=10)
+result_label.grid(row=5, column=1, padx=10, pady=10)
 
 root.mainloop()

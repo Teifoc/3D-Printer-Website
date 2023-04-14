@@ -226,7 +226,16 @@ def update_model(model_id, name=None, description=None, image=None, stl_file=Non
 
 def delete_model(model_id):
     """Deletes an existing model from the database."""
-    result = models.delete_one({"_id": model_id}) 
+    # Display a list of all models
+    all_models = read_models()
+    for model in all_models:
+        print(f"{model['name']}")
+    
+    # Prompt the user to select a model
+    model_id = input("Enter the name of the model to delete: ")
+    
+    # Delete the selected model
+    result = models.delete_one({"name": ObjectId(name)}) 
     return result.deleted_count
 
 # Define the Streamlit app
@@ -270,7 +279,7 @@ def app():
                 update_model(model["_id"], edit_name, edit_description, image, stl_file)
                 st.success("Model updated successfully.")
         if st.button("Delete"):
-            delete_model(model["_id"])
+            delete_model(model["name"])
             st.success("Model deleted successfully.")
 
 app()
