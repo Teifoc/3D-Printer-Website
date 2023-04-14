@@ -1,12 +1,11 @@
 
-# Methode deleteModel entsprechend erstellen
-
 
 import streamlit as st
 import pymongo
 import secret as s
 import gzip
 import io
+from bson import ObjectId
 
 # Connect to the MongoDB database
 client = s.client
@@ -37,31 +36,23 @@ def update_model(model_id, name=None, description=None, image=None, stl_file=Non
     if description is not None:
         new_values["description"] = description
     if image is not None:
-        new_values["image"] = image
-    if stl_file is not None:
         with gzip.open(filename="compressed_image.gz", mode="wb") as f:
             f.write(image.read())
         compressed_image = io.BytesIO()
         with gzip.GzipFile(fileobj=compressed_image, mode="wb") as f:
             f.write(stl_file.getvalue())
         compressed_stl_file = compressed_image.getvalue()
+        new_values["image"] = compressed_image.getvalue()
         new_values["stl_file"] = compressed_stl_file
-    result = models.update_one({"_id": model_id}, {"$set": new_values})
+    result = models.update_one({"_id": pymongo.ObjectId(model_id)}, {"$set": new_values})
     return result.modified_count
 
 def delete_model(model_id):
     """Deletes an existing model from the database."""
-    # Display a list of all models
-    all_models = read_models()
-    for model in all_models:
-        print(f"{model['name']}")
-
-    # Prompt the user to select a model
-    model_id = input("Enter the name of the model to delete: ")
-
-    # Delete the selected model
-    result = models.delete_one({"_id": model_id}) 
+    #result = models.delete_one({"_id": pymongo.ObjectId(model_id)})
+    result = models.delete_one({"_id": ObjectId(model_id)})
     return result.deleted_count
+
 
 # Define the Streamlit app
 def app():
@@ -75,13 +66,11 @@ def app():
     image = st.file_uploader("Upload an image of the model", accept_multiple_files=False, type=["png", "jpg", "jpeg"], key="image")
     stl_file = st.file_uploader("Upload the STL file", accept_multiple_files=False, type=["stl"], key="stl_file")
 
-
     if st.button("Create"):
         image_file = io.BytesIO(image.read())
         stl_file_obj = io.BytesIO(stl_file.read())
         create_model(name, description, image_file, stl_file_obj)
         st.success("Model created successfully.")
-
 
     # Show a list of all models
     st.header("List of models")
@@ -108,13 +97,11 @@ def app():
                 st.success("Model updated successfully.")
         #if st.button("Delete", key="delete button"):
         if st.button("Delete", key=f"delete button {model['_id']}"):
-            delete_model(model["name"])
+            delete_model(model["_id"])
             st.success("Model deleted successfully.")
 
+
 app()
-
-
-
 
 
 
