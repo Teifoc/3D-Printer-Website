@@ -6,17 +6,17 @@ st.title("This visulises the 3D-Printer Queue")
 
 st.info("Hier werden alle Aufträge angezeigt die in der Datenbank gespeichert sind")
 
-# Verbindung zur MongoDB herstellen
+# connection to MongoDB
 client = s.client
-# Datenbank und Collection auswählen
+# select DB and Collection
 db = s.client.get_database('Website')
 collection = db['Orders']
 
-# Alle Einträge aus der Sammlung abrufen und in ein pandas DataFrame umwandeln
+# Retrieve all entries from the collection and convert them into a pandas DataFrame
 results = list(collection.find({}, {"_id": 0}))
 df = pd.DataFrame(results)
 
-# Überprüfen, ob die _id-Spalte im DataFrame vorhanden ist, bevor sie entfernt wird
+# Check whether the _id column is present in the DataFrame before it is removed
 if '_id' in df.columns:
     df.drop('_id', axis=1, inplace=True)
 
