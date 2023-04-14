@@ -65,7 +65,7 @@ st.subheader("Details of Printing")
 printtime = model_data['printTime']
 price = model_data['price']
 st.text("Time: {}".format(printtime) +" hour(s)")
-st.text("Price for the model: {}".format(price) +" €")
+st.text("Price for the model: {}".format(price) +" € / pc")
 st.text("Description: {}".format(description))
 
 
@@ -76,8 +76,9 @@ form = st.form(key="Ordering form")
 material_options = ["PLA", "ABS", "PETG", "Wood", "Metal", "Other"]
 
 selected_material = form.selectbox("Material", material_options, help="Select the material you want to print with", key="material")
+pieces = form.number_input("Pieces:", min_value=1, value=1, help="How many pieces do you want to order?")
 color_picker = form.color_picker("Pick a color")
-pieces = form.number_input("Quantity", min_value=1, max_value=100, value=1, help="How many pieces do you want to print?")
+quantity = form.number_input("Quantity", min_value=1, max_value=100, value=1, help="Select the number of quantity")
 infill = form.number_input("Infill", 0, 100, 1, help="Select here the percentage of the infill (values from 0 to 100 % are allowed)")
 
 # Set default values
@@ -94,8 +95,9 @@ if confirm_order:
         data = {
             'name': model_name,
             'material': selected_material,
+            'pieces': pieces,
             'color': color_picker,
-            'quantity': pieces,
+            'quantity': quantity,
             'infill': infill
         }
         
