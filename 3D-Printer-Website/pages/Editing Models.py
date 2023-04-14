@@ -241,14 +241,15 @@ def delete_model(model_id):
 # Define the Streamlit app
 def app():
     st.title("Editing Models")
-    st.text("Hier kann man die Modelle bearbeiten oder neue Hinzufügen welche in der Datenbank gespiechert sind")
+    st.text("Here can you edit the models or add new ones that are stored in the database.")
 
     # Show a form to create a new model
     st.header("Create a new model")
     name = st.text_input("Name")
     description = st.text_area("Description")
-    image = st.file_uploader("Upload an image of the model", accept_multiple_files=False, type=["png", "jpg", "jpeg"])
-    stl_file = st.file_uploader("Upload the STL file", accept_multiple_files=False, type=["stl"])
+    image = st.file_uploader("Upload an image of the model", accept_multiple_files=False, type=["png", "jpg", "jpeg"], key="image")
+    stl_file = st.file_uploader("Upload the STL file", accept_multiple_files=False, type=["stl"], key="stl_file")
+
     
     if st.button("Create"):
         image_file = io.BytesIO(image.read())
@@ -262,11 +263,11 @@ def app():
     model_list = read_models()
     for model in model_list:
         st.write(f"**{model['name']}**: {model['description']}")
-        with st.beta_expander("Edit"):
+        with st.expander("Edit"):
             edit_name = st.text_input("Name", model["name"])
             edit_description = st.text_area("Description", model["description"])
-            edit_image = st.file_uploader("Upload a new image of the model")
-            edit_stl_file = st.file_uploader("Upload a new STL file")
+            edit_image = st.file_uploader("Upload a new image of the model", key="edit_image")
+            edit_stl_file = st.file_uploader("Upload a new STL file", key="edit stl_file")
             if st.button("Update"):
                 if edit_image is not None:
                     image = edit_image.read()
