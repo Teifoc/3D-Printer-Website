@@ -94,45 +94,43 @@ def read_models():
     """Retrieves all models from the database."""
     return list(models.find())
 
-with st.spinner("Loading Models from Database..."):
-    st.write(read_models())
 
-
-models = [
-    ("Lion", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "10€", "1h"),
-    ("Tiger", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "15€", "2h"),  
-    ("Mouse", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "20€", "3h"), 
-    ("Elephant", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "20€", "3h"),
-    ("Giraffe", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "25€", "4h"),
-    ("Panda", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "25€", "4h"),
-    ("Dog", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "30€", "5h"),
-    ("Cat", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "30€", "5h"),
-    ("Horse", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "35€", "6h"),
-    ("Cow", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "35€", "6h"),
-    ("Sheep", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "40€", "7h"),
-    ("Chicken", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "40€", "7h"),
-    ("Pig", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "45€", "8h"),
-    ("Duck", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "45€", "8h"),
-    ]
+ #("Lion", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "10€", "1h"),
 
 st.text("Here you can see all the Models which are available for ordering")
 st.text("Click on the Model to get more information about it")
 
-for i in range(0, len(models), 4):
-    row = st.columns(4)
-    for j in range(4):
-        if i+j < len(models):
-            model = models[i+j]
-            with row[j]:
-                form = st.form(key=model[0])
-                with form:
-                    st.image(model[1], use_column_width=True)
-                    st.text(model[0])
-                    st.text("Price: {}".format(model[2]))
-                    st.text("Time: {}".format(model[3]))
+with st.spinner("Loading Models from Database..."):
+     models =list(read_models())
+
+# iterate through the models
+num_rows = (len(models) + 3) // 4
+
+# iterate through the rows
+for row_index in range(num_rows):
+    # create a new row of 4 columns
+    columns = st.columns(4)
+    
+    # iterate through the columns in the current row
+    for col_index in range(4):
+        # calculate the index of the current model
+        model_index = row_index * 4 + col_index
+        
+        # check if the current model index is within the range of the models list
+        if model_index < len(models):
+            model = models[model_index]
+            with columns[col_index]:
+                with st.form(key=model["name"]):
+                    model_binary_picture = model["picture"]
+                    with gzip.GzipFile(fileobj=io.BytesIO(model_binary_picture)) as f:
+                        model_image = f.read()
+                        st.image(model_image, use_column_width=True)
+                    st.text(model["name"])
+                    st.text("Price: {}".format(model["price"]))
+                    st.text("Time: {}".format(model["printTime"]))
 
                     # @Max hier muss man noch den link zum detail view einfügen bei .format(model[0])
-                    url = "http://localhost:8501/Detail_view?site={}".format(model[0])
+                    url = "http://localhost:8501/Detail_view?site={}".format(model["name"])
 
                     # Create a centered button with custom CSS
                     st.write(f'''
@@ -166,6 +164,6 @@ for i in range(0, len(models), 4):
                         </a>
                     ''',
                     unsafe_allow_html=True)
-                    test = form.form_submit_button("Add", help="Click here to add a Moddel to your Shopping Cart")
+                    test = st.form_submit_button("Add", help="Click here to add a Moddel to your Shopping Cart")
                     if test:
-                        st.success("You added the {} to your shopping cart".format(model[0]))
+                        st.success("You added the {} to your shopping cart".format(model["name"]))
