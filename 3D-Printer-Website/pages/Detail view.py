@@ -1,5 +1,7 @@
 import streamlit as st
 import webbrowser
+import io
+import gzip
 import secret as s
 
 query = st.experimental_get_query_params()
@@ -36,15 +38,25 @@ st.title("Here you can get more info about the Product")
 st.header("Model Name: " + model_name)
 
 
-
 # Connect to the MongoDB database
 db = s.client.Website
 
 
 col_left, col_right = st.columns(2)
 
-col_left.subheader("Product Image")
-col_left.image("https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", use_column_width=True)
+# Retrieve the model image from the database
+model_data = db.Models.find_one({'name': model_name})
+
+if model_data:
+    model_binary = model_data['picture']
+    with gzip.GzipFile(fileobj=io.BytesIO(model_binary)) as f:
+        model_image = f.read()
+    
+    col_left.subheader("Product Image")
+    col_left.image(model_image, use_column_width=True)
+else:
+    st.error("Model image not found in database.")
+    st.stop()
 
 st.subheader("Optional parameters")
 # Creating form for the ordering process
