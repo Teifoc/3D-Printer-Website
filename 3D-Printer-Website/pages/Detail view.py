@@ -3,9 +3,35 @@ import webbrowser
 import secret as s
 
 
-# Connect to Mongo database
-s.client
-db = s.client.Website
+
+
+querry = st.experimental_get_query_params()
+
+if len(querry) == 0:
+
+    st.info("Please select a product first")
+    st.info ("Please go to the Homepage and select a product")
+    st.info("https://3d-printer-website.streamlit.app")
+    
+    url = "https://3d-printer-website.streamlit.app"
+    st.write(f'''
+        <a target="_self" href="{url}">
+        <div class="center">
+            <button>
+               Click here to select a Product on the Home Page
+            </button>
+        </div>
+        </a>
+    ''',
+    unsafe_allow_html=True
+    )
+
+    st.stop()
+
+# dieser Aufruf ist zum testen
+st.write(querry['site'][0])
+
+# Connect to the MongoDB database
 
 
 product_name = "Lion Model"

@@ -121,6 +121,42 @@ for i in range(0, len(models), 4):
                     st.text(model[0])
                     st.text("Price: {}".format(model[2]))
                     st.text("Time: {}".format(model[3]))
+                    
+                    # @Max hier muss man noch den link zum detail view einfügen bei .format(model[0])
+                    url = "http://localhost:8501/Detail_view?site={}".format(model[0])
+                    # Create a centered button with custom CSS
+                    # Create a centered button with custom CSS
+                    st.write(f'''
+                        <style>
+                            .center {{
+                                display: flex;
+                                height: 100%;
+                            }}
+                            .my-button {{
+                                background-color: #ff0000;
+                                border: none;
+                                color: white;
+                                padding: 5px 10px;
+                                text-align: center;
+                                text-decoration: none;
+                                display: inline-block;
+                                font-size: 14px;
+                                border-radius: 5px;
+                                cursor: pointer;
+                            }}
+                            .my-button:hover {{
+                                background-color: #c40000;
+                            }}
+                        </style>
+                        <a target="_self" href="{url}">
+                            <div class="center">
+                                <button class="my-button">
+                                    Detail view
+                                </button>
+                            </div>
+                        </a>
+                    ''',
+                    unsafe_allow_html=True)
                     test = form.form_submit_button("Add", help="Click here to add a Moddel to your Shopping Cart")
                     if test:
                         st.success("You added the {} to your shopping cart".format(model[0]))
