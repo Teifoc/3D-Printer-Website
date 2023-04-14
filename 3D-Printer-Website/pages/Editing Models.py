@@ -60,7 +60,7 @@ def delete_model(model_id):
     model_id = input("Enter the name of the model to delete: ")
 
     # Delete the selected model
-    result = models.delete_one({"name": ObjectId(name)}) 
+    result = models.delete_one({"_id": model_id}) 
     return result.deleted_count
 
 # Define the Streamlit app
