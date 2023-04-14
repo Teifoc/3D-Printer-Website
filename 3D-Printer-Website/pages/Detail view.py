@@ -5,14 +5,48 @@ import secret as s
 
 
 
-querry = st.experimental_get_query_params()
+# querry = st.experimental_get_query_params()
+#
+# if len(querry) == 0:
+#
+#     st.info("Please select a product first")
+#     st.info ("Please go to the Homepage and select a product")
+#     st.info("https://3d-printer-website.streamlit.app")
+#
+#     url = "https://3d-printer-website.streamlit.app"
+#     st.write(f'''
+#         <a target="_self" href="{url}">
+#         <div class="center">
+#             <button>
+#                Click here to select a Product on the Home Page
+#             </button>
+#         </div>
+#         </a>
+#     ''',
+#     unsafe_allow_html=True
+#     )
+#
+#     st.stop()
+#
+# # dieser Aufruf ist zum testen
+# #st.write(querry['site'][0])
+#
+# # Retrieve the model name from the query parameters
+# model_name = querry["model_name"][0]
+#
+# st.title("Here you can get more info about the Product")
+# st.header("Product Name: " + model_name)
 
-if len(querry) == 0:
 
+
+
+query = st.experimental_get_query_params()
+
+if len(query) == 0:
     st.info("Please select a product first")
-    st.info ("Please go to the Homepage and select a product")
+    st.info("Please go to the Homepage and select a product")
     st.info("https://3d-printer-website.streamlit.app")
-    
+
     url = "https://3d-printer-website.streamlit.app"
     st.write(f'''
         <a target="_self" href="{url}">
@@ -28,17 +62,23 @@ if len(querry) == 0:
 
     st.stop()
 
-# dieser Aufruf ist zum testen
-st.write(querry['site'][0])
+# Retrieve the model name from the query parameters, with error handling
+model_name = query.get("site")
+if not model_name:
+    st.error("No model name specified in query parameters.")
+    st.stop()
 
-# Connect to the MongoDB database
-
-
-product_name = "Lion Model"
+model_name = model_name[0]
 
 st.title("Here you can get more info about the Product")
+st.header("Model Name: " + model_name)
 
-st.header("Product Name: "+product_name)
+
+
+# Connect to the MongoDB database
+db = s.client.Website
+
+
 col_left, col_right = st.columns(2)
 
 col_left.subheader("Product Image")
@@ -71,6 +111,7 @@ if confirm_order:
 
         # Prepare data for the new document
         data = {
+            'name': model_name,
             'material': selected_material,
             'color': color_picker,
             'quantity': pieces,
