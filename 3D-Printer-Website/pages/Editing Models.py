@@ -91,9 +91,11 @@ def app():
         with st.expander("Edit"):
             edit_name = st.text_input("Name", model["name"])
             edit_description = st.text_area("Description", model["description"])
-            edit_image = st.file_uploader("Upload a new image of the model", key="edit_image")
-            edit_stl_file = st.file_uploader("Upload a new STL file", key="edit stl_file")
-            if st.button("Update"):
+            #edit_image = st.file_uploader("Upload a new image of the model", key="edit_image")
+            edit_image = st.file_uploader("Upload a new image of the model", key="edit_image_" + str(model["_id"]))
+            edit_stl_file = st.file_uploader("Upload a new STL file", key="edit stl_file"+ str(model["_id"]))
+            #if st.button("Update", key="update button"):
+            if st.button("Update", key=f"update button {model['_id']}"):
                 if edit_image is not None:
                     image = edit_image.read()
                 else:
@@ -104,7 +106,8 @@ def app():
                     stl_file = model["stl_file"]
                 update_model(model["_id"], edit_name, edit_description, image, stl_file)
                 st.success("Model updated successfully.")
-        if st.button("Delete"):
+        #if st.button("Delete", key="delete button"):
+        if st.button("Delete", key=f"delete button {model['_id']}"):
             delete_model(model["name"])
             st.success("Model deleted successfully.")
 
