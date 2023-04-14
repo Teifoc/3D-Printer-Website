@@ -2,44 +2,6 @@ import streamlit as st
 import webbrowser
 import secret as s
 
-
-
-
-# querry = st.experimental_get_query_params()
-#
-# if len(querry) == 0:
-#
-#     st.info("Please select a product first")
-#     st.info ("Please go to the Homepage and select a product")
-#     st.info("https://3d-printer-website.streamlit.app")
-#
-#     url = "https://3d-printer-website.streamlit.app"
-#     st.write(f'''
-#         <a target="_self" href="{url}">
-#         <div class="center">
-#             <button>
-#                Click here to select a Product on the Home Page
-#             </button>
-#         </div>
-#         </a>
-#     ''',
-#     unsafe_allow_html=True
-#     )
-#
-#     st.stop()
-#
-# # dieser Aufruf ist zum testen
-# #st.write(querry['site'][0])
-#
-# # Retrieve the model name from the query parameters
-# model_name = querry["model_name"][0]
-#
-# st.title("Here you can get more info about the Product")
-# st.header("Product Name: " + model_name)
-
-
-
-
 query = st.experimental_get_query_params()
 
 if len(query) == 0:
@@ -118,7 +80,6 @@ if confirm_order:
             'infill': infill
         }
         
-        #s.db.Models.insert_one(data)
 
         # Insert the new document into the collection
         result = db.Orders.insert_one(data)
