@@ -67,19 +67,11 @@ hide_anchor_link()
 import secret as s
 import io
 import gzip
+import pymongo
 
 
-
-
-#client = MongoClient(s.db_url) #st.secrets["db_username"]
-#db = client.get_database(s.db_name)
-#collection = db.get_collection(s.db_collection)
-#db.authenticate(s.db_username, s.db_password)
 
 st.markdown("<h1 style='text-align: center; color: red;'>3D-Printer Website</h1>", unsafe_allow_html=True)
-
-
-
 
 with st.expander("Info about Website"):
     st.header("Welcome to the 3D-Printer Website")
@@ -94,11 +86,16 @@ st.subheader("Models Overview")
 
 
 # Connect to the MongoDB database
-db = s.client.Website
+client = s.client
+db = client["Website"]
+models = db["Models"]
 
-models = list(db.models.find())
+def read_models():
+    """Retrieves all models from the database."""
+    return list(models.find())
 
-
+with st.spinner("Loading Models from Database..."):
+    st.write(read_models())
 
 
 models = [
@@ -179,21 +176,6 @@ for i in range(0, len(models), 4):
                     #    st.write("https://share.streamlit.io/3d-printer-website/3d-printer-website/main/Detail_view.py?model="+model[0])
 
 
-st.sidebar.header("Order Form")
-st.sidebar.text("List of all your Orders")
-st.sidebar.text("just click on a Model to delete it")
-#//divide the sidebar into two colums
-row = st.sidebar.columns(2)
-with row[0]:
-    st.button("Delete Lion Model")
-    st.text("Tiger Model")
-    st.text("Mouse Model")
-
-with row[1]:
-    st.image("https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", use_column_width=True)
-    st.text("Elephant Model")
-    st.text("Giraffe Model")
-    st.text("Panda Model")
 
 
 
