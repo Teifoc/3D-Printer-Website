@@ -57,6 +57,14 @@ if model_data:
 else:
     st.error("Model image not found in database.")
     st.stop()
+    
+st.subheader("Details of Printing")
+# Retrieve printtime and price data from the database
+printtime = model_data['printTime']
+price = model_data['price']
+st.text("Time: {}".format(printtime) +" hour(s)")
+st.text("Price for the model: {}".format(price) +" €")
+
 
 st.subheader("Optional parameters")
 # Creating form for the ordering process
@@ -68,10 +76,6 @@ selected_material = form.selectbox("Material", material_options, help="Select th
 color_picker = form.color_picker("Pick a color")
 pieces = form.number_input("Quantity", min_value=1, max_value=100, value=1, help="How many pieces do you want to print?")
 infill = form.number_input("Infill", 0, 100, 1, help="Select here the percentage of the infill (values from 0 to 100 % are allowed)")
-
-form.subheader("Details of Printing")
-form.text("Time: Placeholder for the estimated printtime")
-form.text("Price for the model: Placeholder for the price")
 
 # Set default values
 url_yes = "https://3d-printer-website.streamlit.app/Editing_Models"
