@@ -1,3 +1,5 @@
+# ToDo: Auf der Seite nur die Modelle anzeigen, die in der Datenbank gespeichert sind und die Seite muss die neuen Modelle auch anzeigen
+
 import streamlit as st
 
 hide_streamlit_style = """
@@ -63,6 +65,8 @@ def hide_anchor_link():
 hide_anchor_link()
 
 import secret as s
+import io
+import gzip
 
 
 
@@ -87,6 +91,14 @@ with st.expander("Info about Website"):
 
 
 st.subheader("Models Overview")
+
+
+# Connect to the MongoDB database
+db = s.client.Website
+
+models = list(db.models.find())
+
+
 
 
 models = [
@@ -121,7 +133,7 @@ for i in range(0, len(models), 4):
                     st.text(model[0])
                     st.text("Price: {}".format(model[2]))
                     st.text("Time: {}".format(model[3]))
-                    
+
                     # @Max hier muss man noch den link zum detail view einfügen bei .format(model[0])
                     url = "http://localhost:8501/Detail_view?site={}".format(model[0])
 
@@ -182,6 +194,107 @@ with row[1]:
     st.text("Elephant Model")
     st.text("Giraffe Model")
     st.text("Panda Model")
+
+
+
+
+# import streamlit as st
+# import io
+# import gzip
+#
+# hide_streamlit_style = """
+#                 <style>
+#                 div[data-testid="stToolbar"] {
+#                 visibility: hidden;
+#                 height: 0%;
+#                 position: fixed;
+#                 }
+#                 div[data-testid="stDecoration"] {
+#                 visibility: hidden;
+#                 height: 0%;
+#                 position: fixed;
+#                 }
+#                 div[data-testid="stStatusWidget"] {
+#                 visibility: hidden;
+#                 height: 0%;
+#                 position: fixed;
+#                 }
+#                 #MainMenu {
+#                 visibility: hidden;
+#                 height: 0%;
+#                 }
+#                 header {
+#                 visibility: hidden;
+#                 height: 0%;
+#                 }
+#                 footer {
+#                 visibility: hidden;
+#                 height: 0%;
+#                 }
+#                 </style>
+#                 """
+# st.markdown(hide_streamlit_style, unsafe_allow_html=True) 
+#
+# def hide_anchor_link():
+#     st.markdown(
+#         body="""
+#         <style>
+#             h1 > div > a {
+#                 display: none;
+#             }
+#             h2 > div > a {
+#                 display: none;
+#             }
+#             h3 > div > a {
+#                 display: none;
+#             }
+#             h4 > div > a {
+#                 display: none;
+#             }
+#             h5 > div > a {
+#                 display: none;
+#             }
+#             h6 > div > a {
+#                 display: none;
+#             }
+#         </style>
+#         """,
+#          unsafe_allow_html=True,
+# )
+#
+# hide_anchor_link()
+#
+# import secret as s
+#
+# st.markdown("<h1 style='text-align: center; color: red;'>3D-Printer Website</h1>", unsafe_allow_html=True)
+#
+# with st.expander("Info about Website"):
+#     st.header("Welcome to the 3D-Printer Website")
+#     st.text("Here you can order your 3D-Printed Models")    
+#     st.info("Info: To view the 3D-Printer Queue just go to the Queue Page")
+#     st.error("Error: If you have any problems with the Website just contact the Admin")
+#     st.success('How it should look like:'+'https://pasteboard.co/xRhbRKobSary.png')
+#
+# st.subheader("Models Overview")
+#
+# # Connect to the MongoDB database
+# db = s.client.Website
+# collection = db["Models"]
+#
+# models = list(collection.find())
+#
+# for model in models:
+#     # Display the model information
+#     st.write(model['name'])
+#     #st.image(image, caption=model['name'])
+#     with gzip.GzipFile(fileobj=io.BytesIO(model['picture'])) as f:
+#         model_image = f.read()
+#     st.write(f"Price: {model['price']} €")
+#     st.write(f"Printing time: {model['printTime']} hour(s)")
+
+
+
+
 
 
 

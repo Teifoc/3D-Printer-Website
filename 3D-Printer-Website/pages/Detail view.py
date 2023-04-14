@@ -48,8 +48,8 @@ col_left, col_right = st.columns(2)
 model_data = db.Models.find_one({'name': model_name})
 
 if model_data:
-    model_binary = model_data['picture']
-    with gzip.GzipFile(fileobj=io.BytesIO(model_binary)) as f:
+    model_binary_picture = model_data['picture']
+    with gzip.GzipFile(fileobj=io.BytesIO(model_binary_picture)) as f:
         model_image = f.read()
     
     col_left.subheader("Product Image")

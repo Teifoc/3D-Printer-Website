@@ -174,6 +174,8 @@
 # app()
 
 
+# Methode deleteModel entsprechend erstellen
+
 
 import streamlit as st
 import pymongo
