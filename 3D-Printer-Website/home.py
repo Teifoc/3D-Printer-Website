@@ -1,5 +1,3 @@
-# ToDo: Auf der Seite nur die Modelle anzeigen, die in der Datenbank gespeichert sind und die Seite muss die neuen Modelle auch anzeigen
-
 import streamlit as st
 
 hide_streamlit_style = """
@@ -110,12 +108,12 @@ num_rows = (len(models) + 3) // 4
 for row_index in range(num_rows):
     # create a new row of 4 columns
     columns = st.columns(4)
-    
+
     # iterate through the columns in the current row
     for col_index in range(4):
         # calculate the index of the current model
         model_index = row_index * 4 + col_index
-        
+
         # check if the current model index is within the range of the models list
         if model_index < len(models):
             model = models[model_index]
@@ -167,3 +165,4 @@ for row_index in range(num_rows):
                     test = st.form_submit_button("Add", help="Click here to add a Moddel to your Shopping Cart")
                     if test:
                         st.success("You added the {} to your shopping cart".format(model["name"]))
+                        
