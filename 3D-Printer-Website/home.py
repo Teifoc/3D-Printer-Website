@@ -126,8 +126,8 @@ for row_index in range(num_rows):
                         model_image = f.read()
                         st.image(model_image, use_column_width=True)
                     st.text(model["name"])
-                    st.text("Price: {}".format(model["price"]))
-                    st.text("Time: {}".format(model["printTime"]))
+                    st.text("Price: {}".format(model["price"]) +" €")
+                    st.text("Time: {}".format(model["printTime"]) +" hour(s)")
 
                     # @Max hier muss man noch den link zum detail view einfügen bei .format(model[0])
                     url = "http://localhost:8501/Detail_view?site={}".format(model["name"])
