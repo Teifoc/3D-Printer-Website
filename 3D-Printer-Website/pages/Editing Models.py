@@ -10,15 +10,42 @@ client = s.client
 db = client["Website"]
 models = db["Models"]
 
+# def create_model(name, description, picture, stl_file, price, print_time):
+#     """Creates a new model in the database."""
+#     compressed_picture = gzip.compress(picture.read())
+#     compressed_stl_file = gzip.compress(stl_file.read())
+#     model = {"name": name, "description": description, "picture": compressed_picture, "stlFile": compressed_stl_file, "price": price, "printTime": print_time}
+#     result = models.insert_one(model)
+#     created_model = models.find_one({"_id": result.inserted_id})
+#     return created_model
+
+
 def create_model(name, description, picture, stl_file, price, print_time):
     """Creates a new model in the database."""
+    if not name or not description or not price or not print_time:
+        raise ValueError("All fields of the form must be filled out to submit the form.")
+    
+    if not picture:
+        raise ValueError("Please select a picture to upload.")
+    
+    if not stl_file:
+        raise ValueError("Please select an STL file to upload.")
+    
     compressed_picture = gzip.compress(picture.read())
     compressed_stl_file = gzip.compress(stl_file.read())
-    model = {"name": name, "description": description, "picture": compressed_picture, "stlFile": compressed_stl_file, "price": price, "printTime": print_time}
+    
+    model = {
+        "name": name,
+        "description": description,
+        "picture": compressed_picture,
+        "stlFile": compressed_stl_file,
+        "price": price,
+        "printTime": print_time
+    }
+    
     result = models.insert_one(model)
     created_model = models.find_one({"_id": result.inserted_id})
     return created_model
-
 
 
 
