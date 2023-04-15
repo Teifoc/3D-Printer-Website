@@ -193,7 +193,9 @@ for row_index in range(num_rows):
                         </a>
                     ''',
                     unsafe_allow_html=True)
-                    test = st.form_submit_button("Add", help="Click here to add a Moddel to your Shopping Cart")
-                    if test:
-                        st.success("You added the {} to your shopping cart".format(model["name"]))
+                    
+                    like = st.form_submit_button("Like!", help="Click here to Like a Model")
+                    if like:
+                        st.success("You liked the model!")
+                        # there is nothing happenig here yet
                         
