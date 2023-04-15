@@ -86,8 +86,9 @@ url_yes = "https://3d-printer-website.streamlit.app/Editing_Models"
 url_no = "https://3d-printer-website.streamlit.app/"
 
 # Add checkbox input fields for "Yes" and "No" options
-confirm_order = form.checkbox("Yes, I want to continue ordering.", key="confirm_order")
-
+confirm_order = form.checkbox("Yes, I want to continue ordering.", key="confirm_order")       
+        
+            
 if confirm_order:
     if form.form_submit_button("Confirm", help="Click here to buy the selected material"):
 
@@ -100,7 +101,7 @@ if confirm_order:
             'quantity': quantity,
             'infill': infill
         }
-        
+
 
         # Insert the new document into the collection
         result = db.Orders.insert_one(data)
