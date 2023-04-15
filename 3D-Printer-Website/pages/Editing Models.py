@@ -36,8 +36,8 @@ def update_model(model_id, name=None, description=None, picture=None, stl_file=N
     if description is not None:
         new_values["description"] = description
     if picture is not None:
-        if isinstance(picture, bytes):
-            picture = io.BytesIO(picture)
+        #if isinstance(picture, bytes):
+        #    picture = io.BytesIO(picture)
         compressed_picture = gzip.compress(picture.read())
         new_values["picture"] = compressed_picture
     if stl_file is not None:
@@ -95,9 +95,7 @@ def delete_model(model_id):
 
 
 # Define the Streamlit app
-def app():
-    st.title("Editing Models")
-    st.text("Here can you edit the models or add new ones that are stored in the database.")
+def create_model():
 
     # Show a form to create a new model
     st.header("Create a new model")
@@ -114,6 +112,8 @@ def app():
         created_model = create_model(name, description, picture_file, stl_file_obj, price, print_time)
         st.success(f"Model '{created_model['name']}' created successfully.")
 
+
+def edit_models():
     # Show a list of all models
     st.header("List of models")
     model_list = read_models()
@@ -145,6 +145,17 @@ def app():
             delete_model(model["_id"])
             st.success(f"Model '{model['name']}' deleted successfully.")
 
+
+
+def app():
+    st.title("Editing Models")
+    option = st.selectbox( 'Here can you edit the models or add new ones that are stored in the database.',
+    ('Edit', 'Create'))
+    if option == 'Edit':
+        edit_models()
+    elif option == 'Create':
+        create_model()
+        
 app()
 
 
