@@ -5,6 +5,8 @@ import gzip
 import io
 from bson import ObjectId
 
+#TODO: Token-Logik auch hier noch ergänzen (vgl. Detail view)
+
 # Connect to the MongoDB database
 client = s.client
 db = client["Website"]

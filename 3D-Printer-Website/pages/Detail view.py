@@ -92,11 +92,11 @@ confirm_order = form.checkbox("Yes, I want to continue ordering.", key="confirm_
 if confirm_order:
     if form.form_submit_button("Confirm", help="Click here to buy the selected material"):
 
-        # Generate a random 4-digit code
-        code = random.randint(1000, 9999)
+        # Generate a random 4-digit token
+        token = random.randint(1000, 9999)
 
-        # Convert the code to a string
-        code_str = str(code)
+        # Convert the token to a string
+        token_str = str(token)
 
         # Prepare data for the new document
         data = {
@@ -106,7 +106,7 @@ if confirm_order:
             'color': color_picker,
             'quantity': quantity,
             'infill': infill,
-            'code': code_str  # Add the code to the data
+            'token': token_str  # Add the token to the data
         }
 
         # Insert the new document into the collection
@@ -115,16 +115,16 @@ if confirm_order:
         # Remove the 'id' parameter from the URL
         st.experimental_set_query_params()
 
-        # Display the code to the user
-        st.success("Order created successfully with Order ID: {} and Code: {}".format(result.inserted_id, code_str))
+        # Display the token to the user
+        st.success("Order created successfully with Order ID: {} and Token: {}".format(result.inserted_id, token_str))
 
-        # Provide a way for the user to download the code
-        code_bytes = code_str.encode('utf-8')
-        code_file = io.BytesIO(code_bytes)
-        st.download_button(label="Download code", data=code_file, file_name=f"order_code_{result.inserted_id}.txt", mime="text/plain")
+        # Provide a way for the user to download the token
+        token_bytes = token_str.encode('utf-8')
+        token_file = io.BytesIO(token_bytes)
+        st.download_button(label="Download token", data=token_file, file_name=f"order_token_{result.inserted_id}.txt", mime="text/plain")
 
-        # Add an explanation of the code's purpose
-        st.info("Please download the code above. You will need it to delete the order from the list of print jobs if necessary.")
+        # Add an explanation of the token's purpose
+        st.info("Please download the token above. You will need it to delete the order from the list of print jobs if necessary.")
 else:
     form.form_submit_button("Confirm", help="Click here to buy the selected material")
 
