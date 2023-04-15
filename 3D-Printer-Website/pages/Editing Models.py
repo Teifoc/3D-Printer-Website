@@ -95,7 +95,7 @@ def delete_model(model_id):
 
 
 # Define the Streamlit app
-def create_model():
+def create_model_site():
 
     # Show a form to create a new model
     st.header("Create a new model")
@@ -113,7 +113,7 @@ def create_model():
         st.success(f"Model '{created_model['name']}' created successfully.")
 
 
-def edit_models():
+def edit_models_site():
     # Show a list of all models
     st.header("List of models")
     model_list = read_models()
@@ -152,10 +152,10 @@ def app():
     option = st.selectbox( 'Here can you edit the models or add new ones that are stored in the database.',
     ('Edit', 'Create'))
     if option == 'Edit':
-        edit_models()
+        edit_models_site()
     elif option == 'Create':
-        create_model()
-        
+        create_model_site()
+
 app()
 
 
