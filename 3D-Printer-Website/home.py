@@ -129,6 +129,8 @@ for row_index in range(num_rows):
 
                     # @Max hier muss man noch den link zum detail view einfügen bei .format(model[0])
                     url = "http://localhost:8501/Detail_view?site={}".format(model["name"])
+                    #url = "http://localhost:8501/Detail_view?site={}".format(str(model['_id']))
+
 
                     # Create a centered button with custom CSS
                     st.write(f'''

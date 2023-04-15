@@ -10,11 +10,11 @@ client = s.client
 db = client["Website"]
 models = db["Models"]
 
-def create_model(name, description, image, stl_file):
+def create_model(name, description, picture, stl_file, price, print_time):
     """Creates a new model in the database."""
-    compressed_image = gzip.compress(image.read())
+    compressed_picture = gzip.compress(picture.read())
     compressed_stl_file = gzip.compress(stl_file.read())
-    model = {"name": name, "description": description, "image": compressed_image, "stl_file": compressed_stl_file}
+    model = {"name": name, "description": description, "picture": compressed_picture, "stlFile": compressed_stl_file, "price": price, "printTime": print_time}
     result = models.insert_one(model)
     created_model = models.find_one({"_id": result.inserted_id})
     return created_model
@@ -24,27 +24,37 @@ def read_models():
     """Retrieves all models from the database."""
     return list(models.find())
 
-def update_model(model_id, name=None, description=None, image=None, stl_file=None):
+
+def update_model(model_id, name=None, description=None, picture=None, stl_file=None, price=None, print_time=None):
     """Updates an existing model in the database."""
-    new_values = {}
+    model = models.find_one({"_id": ObjectId(model_id)})
+    new_values = {"name": model["name"], "description": model["description"], "picture": model["picture"], "stlFile": model["stlFile"], "price": model["price"], "printTime": model["printTime"]}
     if name is not None:
         new_values["name"] = name
     if description is not None:
         new_values["description"] = description
-    if image is not None:
-        compressed_image = gzip.compress(image.read())
-        new_values["image"] = compressed_image
+    if picture is not None:
+        if isinstance(picture, bytes):
+            picture = io.BytesIO(picture)
+        compressed_picture = gzip.compress(picture.read())
+        new_values["picture"] = compressed_picture
     if stl_file is not None:
+        if isinstance(stl_file, bytes):
+            stl_file = io.BytesIO(stl_file)
         compressed_stl_file = gzip.compress(stl_file.read())
-        new_values["stl_file"] = compressed_stl_file
+        new_values["stlFile"] = compressed_stl_file
+    if price is not None:
+        new_values["price"] = price
+    if print_time is not None:
+        new_values["printTime"] = print_time
     result = models.update_one({"_id": ObjectId(model_id)}, {"$set": new_values})
     return result.modified_count
 
 
 
+
 def delete_model(model_id):
     """Deletes an existing model from the database."""
-    #result = models.delete_one({"_id": pymongo.ObjectId(model_id)})
     result = models.delete_one({"_id": ObjectId(model_id)})
     return result.deleted_count
 
@@ -58,40 +68,47 @@ def app():
     st.header("Create a new model")
     name = st.text_input("Name")
     description = st.text_area("Description")
-    image = st.file_uploader("Upload an image of the model", accept_multiple_files=False, type=["png", "jpg", "jpeg"], key="image")
-    stl_file = st.file_uploader("Upload the STL file", accept_multiple_files=False, type=["stl"], key="stl_file")
+    picture = st.file_uploader("Upload a picture of the model", accept_multiple_files=False, type=["png", "jpg", "jpeg"], key="picture")
+    stl_file = st.file_uploader("Upload the STL file", accept_multiple_files=False, type=["stl"], key="stlFile")
+    price = st.number_input("Price in €")
+    print_time = st.number_input("Print time in hours")
 
     if st.button("Create"):
-        image_file = io.BytesIO(image.read())
+        picture_file = io.BytesIO(picture.read())
         stl_file_obj = io.BytesIO(stl_file.read())
-        create_model(name, description, image_file, stl_file_obj)
-        st.success(f"Model created successfully.")
+        created_model = create_model(name, description, picture_file, stl_file_obj, price, print_time)
+        st.success(f"Model '{created_model['name']}' created successfully.")
 
     # Show a list of all models
     st.header("List of models")
     model_list = read_models()
     for model in model_list:
         st.write(f"**{model['name']}**: {model['description']}")
+        st.write(f"Price: ${model['price']} €, Print time: {model['printTime']} hour(s).")
         with st.expander("Edit"):
             edit_name = st.text_input("Name", model["name"])
             edit_description = st.text_area("Description", model["description"])
-            edit_image = st.file_uploader("Upload a new image of the model", key="edit_image_" + str(model["_id"]))
-            edit_stl_file = st.file_uploader("Upload a new STL file", key="edit stl_file"+ str(model["_id"]))
+            edit_picture = st.file_uploader("Upload a new picture of the model", key="edit_picture_" + str(model["_id"]))
+            edit_stl_file = st.file_uploader("Upload a new STL file", key="edit_stl_file_"+ str(model["_id"]))
+            edit_price = st.number_input("Price in €", value=float(model['price']), key=f"price_{model['_id']}")
+            edit_print_time = st.number_input("Print time in hours", value=float(model['printTime']), key=f"print_time_{model['_id']}")
+
+
             if st.button("Update", key=f"update button {model['_id']}"):
-                if edit_image is not None:
-                    image = edit_image.read()
+                if edit_picture is not None:
+                    picture = edit_picture.read()
                 else:
-                    image = model["image"]
+                    picture = model["picture"]
                 if edit_stl_file is not None:
                     stl_file = edit_stl_file.read()
                 else:
-                    stl_file = model["stl_file"]
-                update_model(model["_id"], edit_name, edit_description, image, stl_file)
-                st.success(f"Model {model['name']} updated successfully.")
+                    stl_file = model["stlFile"]
+                update_model(model["_id"], edit_name, edit_description, picture, stl_file, edit_price, edit_print_time)
+                st.success(f"Model '{model['name']}' updated successfully.")
+
         if st.button("Delete", key=f"delete button {model['_id']}"):
             delete_model(model["_id"])
-            st.success(f"Model {model['name']} deleted successfully.")
-
+            st.success(f"Model '{model['name']}' deleted successfully.")
 
 app()
 
