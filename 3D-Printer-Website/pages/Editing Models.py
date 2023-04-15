@@ -1,5 +1,3 @@
-
-
 import streamlit as st
 import pymongo
 import secret as s
@@ -14,15 +12,13 @@ models = db["Models"]
 
 def create_model(name, description, image, stl_file):
     """Creates a new model in the database."""
-    with gzip.open(filename="compressed_image.gz", mode="wb") as f:
-        f.write(image.read())
-    compressed_image = io.BytesIO()
-    with gzip.GzipFile(fileobj=compressed_image, mode="wb") as f:
-        f.write(stl_file.getvalue())
-    compressed_stl_file = compressed_image.getvalue()
-    model = {"name": name, "description": description, "image": compressed_image.getvalue(), "stl_file": compressed_stl_file}
+    compressed_image = gzip.compress(image.read())
+    compressed_stl_file = gzip.compress(stl_file.read())
+    model = {"name": name, "description": description, "image": compressed_image, "stl_file": compressed_stl_file}
     result = models.insert_one(model)
-    return result.inserted_id
+    created_model = models.find_one({"_id": result.inserted_id})
+    return created_model
+
 
 def read_models():
     """Retrieves all models from the database."""
@@ -36,16 +32,15 @@ def update_model(model_id, name=None, description=None, image=None, stl_file=Non
     if description is not None:
         new_values["description"] = description
     if image is not None:
-        with gzip.open(filename="compressed_image.gz", mode="wb") as f:
-            f.write(image.read())
-        compressed_image = io.BytesIO()
-        with gzip.GzipFile(fileobj=compressed_image, mode="wb") as f:
-            f.write(stl_file.getvalue())
-        compressed_stl_file = compressed_image.getvalue()
-        new_values["image"] = compressed_image.getvalue()
+        compressed_image = gzip.compress(image.read())
+        new_values["image"] = compressed_image
+    if stl_file is not None:
+        compressed_stl_file = gzip.compress(stl_file.read())
         new_values["stl_file"] = compressed_stl_file
-    result = models.update_one({"_id": pymongo.ObjectId(model_id)}, {"$set": new_values})
+    result = models.update_one({"_id": ObjectId(model_id)}, {"$set": new_values})
     return result.modified_count
+
+
 
 def delete_model(model_id):
     """Deletes an existing model from the database."""
@@ -70,7 +65,7 @@ def app():
         image_file = io.BytesIO(image.read())
         stl_file_obj = io.BytesIO(stl_file.read())
         create_model(name, description, image_file, stl_file_obj)
-        st.success("Model created successfully.")
+        st.success(f"Model created successfully.")
 
     # Show a list of all models
     st.header("List of models")
@@ -80,10 +75,8 @@ def app():
         with st.expander("Edit"):
             edit_name = st.text_input("Name", model["name"])
             edit_description = st.text_area("Description", model["description"])
-            #edit_image = st.file_uploader("Upload a new image of the model", key="edit_image")
             edit_image = st.file_uploader("Upload a new image of the model", key="edit_image_" + str(model["_id"]))
             edit_stl_file = st.file_uploader("Upload a new STL file", key="edit stl_file"+ str(model["_id"]))
-            #if st.button("Update", key="update button"):
             if st.button("Update", key=f"update button {model['_id']}"):
                 if edit_image is not None:
                     image = edit_image.read()
@@ -94,11 +87,10 @@ def app():
                 else:
                     stl_file = model["stl_file"]
                 update_model(model["_id"], edit_name, edit_description, image, stl_file)
-                st.success("Model updated successfully.")
-        #if st.button("Delete", key="delete button"):
+                st.success(f"Model {model['name']} updated successfully.")
         if st.button("Delete", key=f"delete button {model['_id']}"):
             delete_model(model["_id"])
-            st.success("Model deleted successfully.")
+            st.success(f"Model {model['name']} deleted successfully.")
 
 
 app()
