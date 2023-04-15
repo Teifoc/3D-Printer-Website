@@ -10,42 +10,33 @@ client = s.client
 db = client["Website"]
 models = db["Models"]
 
-# def create_model(name, description, picture, stl_file, price, print_time):
-#     """Creates a new model in the database."""
-#     compressed_picture = gzip.compress(picture.read())
-#     compressed_stl_file = gzip.compress(stl_file.read())
-#     model = {"name": name, "description": description, "picture": compressed_picture, "stlFile": compressed_stl_file, "price": price, "printTime": print_time}
-#     result = models.insert_one(model)
-#     created_model = models.find_one({"_id": result.inserted_id})
-#     return created_model
-
-
 def create_model(name, description, picture, stl_file, price, print_time):
     """Creates a new model in the database."""
+    if not picture or not stl_file:
+        raise ValueError("Please select both a picture and an STL file to upload.")
+    
     if not name or not description or not price or not print_time:
         raise ValueError("All fields of the form must be filled out to submit the form.")
     
-    if not picture:
-        raise ValueError("Please select a picture to upload.")
+    if name and description and picture and stl_file and price and print_time:
+        try:
+            compressed_picture = gzip.compress(picture.read())
+            compressed_stl_file = gzip.compress(stl_file.read())
+        except AttributeError:
+            raise ValueError("Please select both a picture and an STL file to upload.")
     
-    if not stl_file:
-        raise ValueError("Please select an STL file to upload.")
-    
-    compressed_picture = gzip.compress(picture.read())
-    compressed_stl_file = gzip.compress(stl_file.read())
-    
-    model = {
-        "name": name,
-        "description": description,
-        "picture": compressed_picture,
-        "stlFile": compressed_stl_file,
-        "price": price,
-        "printTime": print_time
-    }
-    
-    result = models.insert_one(model)
-    created_model = models.find_one({"_id": result.inserted_id})
-    return created_model
+        model = {
+            "name": name,
+            "description": description,
+            "picture": compressed_picture,
+            "stlFile": compressed_stl_file,
+            "price": price,
+            "printTime": print_time
+        }
+        
+        result = models.insert_one(model)
+        created_model = models.find_one({"_id": result.inserted_id})
+        return created_model
 
 
 
@@ -124,7 +115,7 @@ def delete_model(model_id):
 # Define the Streamlit app
 def app():
     st.title("Editing Models")
-    st.text("Here can you edit the models or add new ones that are stored in the database.")
+    st.text("Here can you add new models to the website.")
 
     # Show a form to create a new model
     st.header("Create a new model")
@@ -143,30 +134,34 @@ def app():
 
     # Show a list of all models
     st.header("List of models")
-    model_list = read_models()
+    with st.spinner("Loading List of Models from Database..."):
+     model_list = list(read_models())
+    
+    
+    
     for model in model_list:
         st.write(f"**{model['name']}**: {model['description']}")
-        st.write(f"Price: ${model['price']} €, Print time: {model['printTime']} hour(s).")
-        with st.expander("Edit"):
-            edit_name = st.text_input("Name", model["name"])
-            edit_description = st.text_area("Description", model["description"])
-            edit_picture = st.file_uploader("Upload a new picture of the model", key="edit_picture_" + str(model["_id"]))
-            edit_stl_file = st.file_uploader("Upload a new STL file", key="edit_stl_file_"+ str(model["_id"]))
-            edit_price = st.number_input("Price in €", value=float(model['price']), key=f"price_{model['_id']}")
-            edit_print_time = st.number_input("Print time in hours", value=float(model['printTime']), key=f"print_time_{model['_id']}")
-
-
-            if st.button("Update", key=f"update button {model['_id']}"):
-                if edit_picture is not None:
-                    picture = edit_picture.read()
-                else:
-                    picture = model["picture"]
-                if edit_stl_file is not None:
-                    stl_file = edit_stl_file.read()
-                else:
-                    stl_file = model["stlFile"]
-                update_model(model["_id"], edit_name, edit_description, picture, stl_file, edit_price, edit_print_time)
-                st.success(f"Model '{model['name']}' updated successfully.")
+        st.write(f"Price: {model['price']} €, Print time: {model['printTime']} hour(s).")
+        # with st.expander("Edit"):
+        #     edit_name = st.text_input("Name", model["name"])
+        #     edit_description = st.text_area("Description", model["description"])
+        #     edit_picture = st.file_uploader("Upload a new picture of the model", key="edit_picture_" + str(model["_id"]))
+        #     edit_stl_file = st.file_uploader("Upload a new STL file", key="edit_stl_file_"+ str(model["_id"]))
+        #     edit_price = st.number_input("Price in €", value=float(model['price']), key=f"price_{model['_id']}")
+        #     edit_print_time = st.number_input("Print time in hours", value=float(model['printTime']), key=f"print_time_{model['_id']}")
+        #
+        #
+        #     if st.button("Update", key=f"update button {model['_id']}"):
+        #         if edit_picture is not None:
+        #             picture = edit_picture.read()
+        #         else:
+        #             picture = model["picture"]
+        #         if edit_stl_file is not None:
+        #             stl_file = edit_stl_file.read()
+        #         else:
+        #             stl_file = model["stlFile"]
+        #         update_model(model["_id"], edit_name, edit_description, picture, stl_file, edit_price, edit_print_time)
+        #         st.success(f"Model '{model['name']}' updated successfully.")
 
         if st.button("Delete", key=f"delete button {model['_id']}"):
             delete_model(model["_id"])
