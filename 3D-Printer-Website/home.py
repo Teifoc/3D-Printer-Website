@@ -88,9 +88,14 @@ client = s.client
 db = client["Website"]
 models = db["Models"]
 
+# def read_models():
+#     """Retrieves all models from the database."""
+#     return list(models.find())
+
 def read_models():
     """Retrieves all models from the database."""
-    return list(models.find())
+    models = list(db["Models"].find())
+    return models
 
 
  #("Lion", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "10€", "1h"),

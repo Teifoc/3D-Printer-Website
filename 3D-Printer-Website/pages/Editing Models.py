@@ -20,6 +20,8 @@ def create_model(name, description, picture, stl_file, price, print_time):
     return created_model
 
 
+
+
 def read_models():
     """Retrieves all models from the database."""
     return list(models.find())
@@ -49,6 +51,39 @@ def update_model(model_id, name=None, description=None, picture=None, stl_file=N
         new_values["printTime"] = print_time
     result = models.update_one({"_id": ObjectId(model_id)}, {"$set": new_values})
     return result.modified_count
+
+
+
+# def update_model(model_id, name=None, description=None, picture=None, stl_file=None, price=None, print_time=None):
+#     """Updates an existing model in the database."""
+#     model = models.find_one({"_id": ObjectId(model_id)})
+#     new_values = {"name": model["name"], "description": model["description"], "picture": model["picture"], "stlFile": model["stlFile"], "price": model["price"], "printTime": model["printTime"]}
+#     if name is not None:
+#         new_values["name"] = name
+#     if description is not None:
+#         new_values["description"] = description
+#     if picture is not None:
+#         if isinstance(picture, bytes):
+#             picture = io.BytesIO(picture)
+#         compressed_picture = gzip.compress(picture.read())
+#         new_values["picture"] = compressed_picture
+#         # Update the picture in home.py
+#         model_binary_picture = new_values["picture"]
+#         with gzip.GzipFile(fileobj=io.BytesIO(model_binary_picture)) as f:
+#             picture = f.read()
+#         st.cache()(lambda picture: st.image(picture))(picture)
+#     if stl_file is not None:
+#         if isinstance(stl_file, bytes):
+#             stl_file = io.BytesIO(stl_file)
+#         compressed_stl_file = gzip.compress(stl_file.read())
+#         new_values["stlFile"] = compressed_stl_file
+#     if price is not None:
+#         new_values["price"] = price
+#     if print_time is not None:
+#         new_values["printTime"] = print_time
+#     result = models.update_one({"_id": ObjectId(model_id)}, {"$set": new_values})
+#     return result.modified_count
+
 
 
 
