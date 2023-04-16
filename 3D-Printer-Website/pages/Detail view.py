@@ -141,7 +141,7 @@ if confirm_order:
         
 
         # Add an explanation of the token's purpose
-        st.info("Please download the token above. You will need the order ID and the token to delete the order from the list of print jobs on the page 'Queue' if necessary.")
+        st.info(f"Please download the token above. You will need the order ID and the token to delete the order with the ID '{result.inserted_id}' from the list of print jobs on the page 'Queue' if necessary.")
 else:
     form.form_submit_button("Confirm", help="Click here to buy the selected material")
 

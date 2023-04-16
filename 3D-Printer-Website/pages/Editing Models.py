@@ -175,7 +175,7 @@ def create_model_site():
 
 
         # Add an explanation of the token's purpose
-        st.info("Please download the token above. You will need it to delete the model from the list of models if you want.")
+        st.info(f"Please download the token above. You will need it to delete the model '{created_model['name']}' from the list of models if you want.")
 
 
 def edit_models_site():
