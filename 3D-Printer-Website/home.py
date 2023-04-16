@@ -77,7 +77,7 @@ with st.expander("Info about Website"):
     st.text("Here you can order your 3D-Printed Models")    
     st.info("Info: To view the 3D-Printer Queue just go to the Queue Page")
     st.error("Error: If you have any problems with the Website just contact the Admin")
-    st.success('How it should look like:'+'https://pasteboard.co/xRhbRKobSary.png')
+    #st.success('How it should look like:'+'https://pasteboard.co/xRhbRKobSary.png')
 
 
 
