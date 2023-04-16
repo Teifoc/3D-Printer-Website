@@ -174,7 +174,7 @@ def create_model_site():
         token_file = io.BytesIO(token_bytes)
 
         # Download the token file with the additional information
-        st.download_button(label="Download token", data=token_file, file_name=f"model_token_{created_model['name']}_{created_model['_id']}.txt", mime="text/plain")
+        st.download_button(label="Download token", data=token_file, file_name=f"model_token_{created_model['name']}.txt", mime="text/plain")
 
 
         # Add an explanation of the token's purpose
