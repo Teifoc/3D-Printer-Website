@@ -117,13 +117,28 @@ if confirm_order:
         # Remove the 'id' parameter from the URL
         st.experimental_set_query_params()
 
-        # Display the token to the user
+        # Display the success info to the user
         st.success("Order created successfully with Order ID: {}".format(result.inserted_id))
-
+        
+        
         # Provide a way for the user to download the token
+        # token_bytes = token_str.encode('utf-8')
+        # token_file = io.BytesIO(token_bytes)
+        # st.download_button(label="Download token", data=token_file, file_name=f"order_token_{result.inserted_id}.txt", mime="text/plain")
+        
+        # Define the additional information
+        additional_info = f"{result.inserted_id}\t--> order ID\n\nThis is a important information. You will need the order ID and the token to delete the order form the list of print jobs on the page 'Queue'."
+        
+        # Append the additional information to the token_str
+        token_str += "\t--> token \n" + additional_info
+        
+        # Encode the token_str and create the token_file
         token_bytes = token_str.encode('utf-8')
         token_file = io.BytesIO(token_bytes)
+
+        # Download the token file with the additional information
         st.download_button(label="Download token", data=token_file, file_name=f"order_token_{result.inserted_id}.txt", mime="text/plain")
+        
 
         # Add an explanation of the token's purpose
         st.info("Please download the token above. You will need it to delete the order from the list of print jobs if necessary.")

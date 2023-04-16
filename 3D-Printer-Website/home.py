@@ -90,17 +90,12 @@ client = pymongo.MongoClient(st.secrets["db_link"])
 db = client["Website"]
 models = db["Models"]
 
-# def read_models():
-#     """Retrieves all models from the database."""
-#     return list(models.find())
 
 def read_models():
     """Retrieves all models from the database."""
     models = list(db["Models"].find())
     return models
 
-
- #("Lion", "https://files.cults3d.com/uploads/collection/shot_en/131/low_poly_collection_3D_printing_3.jpg", "10€", "1h"),
 
 st.text("Here you can see all the Models which are available for ordering")
 st.text("Click on the Model to get more information about it")

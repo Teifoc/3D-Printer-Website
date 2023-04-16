@@ -6,8 +6,6 @@ import io
 from bson import ObjectId
 import random
 
-#TODO: Token-Logik auch hier noch ergänzen (vgl. Detail view)
-
 # Connect to the MongoDB database
 
 client = pymongo.MongoClient(st.secrets["db_link"])
@@ -37,11 +35,6 @@ def create_model(name, description, picture, stl_file, price, print_time):
         except AttributeError:
             raise ValueError("Please select both a picture and an STL file to upload.")
         
-        # # Generate a random 4-digit token
-        # token = random.randint(1000, 9999)
-        #
-        # # Convert the token to a string
-        # token_str = str(token)
     
         model = {
             "name": name,
