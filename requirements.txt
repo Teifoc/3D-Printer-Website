@@ -1,6 +1,5 @@
 pymongo
 streamlit
-io
 gzip
 random
 pandas
