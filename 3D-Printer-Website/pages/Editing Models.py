@@ -1,6 +1,6 @@
 import streamlit as st
 import pymongo
-import secret as s
+#import secret as s
 import gzip
 import io
 from bson import ObjectId
@@ -9,7 +9,10 @@ import random
 #TODO: Token-Logik auch hier noch ergänzen (vgl. Detail view)
 
 # Connect to the MongoDB database
-client = s.client
+
+client = pymongo.MongoClient(st.secrets["db_link"])
+
+#client = s.client 
 db = client["Website"]
 models = db["Models"]
 

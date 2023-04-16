@@ -2,7 +2,7 @@ import streamlit as st
 import webbrowser
 import io
 import gzip
-import secret as s
+#import secret as s
 import random
 
 query = st.experimental_get_query_params()
@@ -40,7 +40,7 @@ from bson.objectid import ObjectId
 object_id = ObjectId(model_id)
 
 # Connect to the MongoDB database
-db = s.client.Website
+db = pymongo.MongoClient(st.secrets["db_link"]).Website
 
 # Retrieve the model data from the database
 model_data = db.Models.find_one({'_id':object_id})

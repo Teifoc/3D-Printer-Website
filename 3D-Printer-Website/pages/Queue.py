@@ -2,14 +2,15 @@ import streamlit as st
 import pymongo
 from bson import ObjectId
 import pandas as pd
-import secret as s
+#import secret as s
 
 st.title("This visualises the 3D-Printer Queue")
 
 st.info("All orders that are stored in the database are displayed here.")
 
 # connection to MongoDB
-client = s.client
+client = pymongo.MongoClient(st.secrets["db_link"])
+#client = s.client
 # select DB and Collection
 db = client["Website"]
 collection = db["Orders"]

@@ -62,7 +62,7 @@ def hide_anchor_link():
 
 hide_anchor_link()
 
-import secret as s
+#import secret as s
 import io
 import gzip
 import pymongo
@@ -84,7 +84,8 @@ st.subheader("Models Overview")
 
 
 # Connect to the MongoDB database
-client = s.client
+client = pymongo.MongoClient(st.secrets["db_link"])
+#client = s.client
 db = client["Website"]
 models = db["Models"]
 
