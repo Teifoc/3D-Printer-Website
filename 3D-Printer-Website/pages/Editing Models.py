@@ -17,6 +17,9 @@ models = db["Models"]
 # Generate a random 4-digit token
 token = random.randint(1000, 9999)
 
+# Convert the token to a string
+token_str = str(token)
+
 
 def create_model(name, description, picture, stl_file, price, print_time):
     """Creates a new model in the database."""
@@ -152,8 +155,7 @@ def create_model_site():
         created_model = create_model(name, description, picture_file, stl_file_obj, price, print_time)
         st.success(f"Model '{created_model['name']}' created successfully.")
         
-        # Convert the token to a string
-        token_str = str(token)
+        
         
         # Provide a way for the user to download the token
         token_bytes = token_str.encode('utf-8')
