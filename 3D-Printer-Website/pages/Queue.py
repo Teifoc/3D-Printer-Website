@@ -25,10 +25,10 @@ if "_id" in df.columns:
     df.rename(columns={"_id": "Order ID"}, inplace=True)
 
 
-# Check if the "code" column exists in the DataFrame
-if "code" in df.columns:
-    # Drop the "code" column
-    df = df.drop("code", axis=1)
+# Check if the "token" column exists in the DataFrame
+if "token" in df.columns:
+    # Drop the "token" column
+    df = df.drop("token", axis=1)
 
 # Check if the "Order ID" column exists in the DataFrame
 if "Order ID" in df.columns:
