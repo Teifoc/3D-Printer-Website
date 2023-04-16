@@ -155,7 +155,7 @@ def create_model_site():
         created_model = create_model(name, description, picture_file, stl_file_obj, price, print_time)
         st.success(f"Model '{created_model['name']}' created successfully.")
         
-        
+        token_str = token_str
         
         # Provide a way for the user to download the token
         token_bytes = token_str.encode('utf-8')
