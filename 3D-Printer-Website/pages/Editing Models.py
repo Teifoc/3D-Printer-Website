@@ -199,12 +199,12 @@ def edit_models_site():
         #         update_model(model["_id"], edit_name, edit_description, picture, stl_file, edit_price, edit_print_time)
         #         st.success(f"Model '{model['name']}' updated successfully.")
 
-        if st.button("Delete Model", key=f"delete_{model['_id']}"):
+        if st.button(f"Delete Model '{model['name']}'", key=f"delete_{model['_id']}"):
             token_input = st.text_input("Please enter the token to confirm:", type="password")
             if token_input:
                 try:
                     #result = delete_model(model["_id"])
-                    result = b.Models.delete_one({"_id": model["_id"], "token": token_input})
+                    result = delete_model(model["_id"], token_input)
                     st.success(result)
                     model = None
                 except ValueError as e:
@@ -223,6 +223,5 @@ def app():
         create_model_site()
 
 app()
-
 
 
