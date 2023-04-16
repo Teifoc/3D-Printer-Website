@@ -12,7 +12,7 @@ client = pymongo.MongoClient(st.secrets["db_link"])
 
 #client = s.client 
 db = client["Website"]
-models = db["Models"]
+models = db["DModels"]
 
 # Generate a random 4-digit token
 token = random.randint(1000, 9999)

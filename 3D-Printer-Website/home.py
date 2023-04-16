@@ -88,12 +88,12 @@ st.subheader("Models Overview")
 client = pymongo.MongoClient(st.secrets["db_link"])
 #client = s.client
 db = client["Website"]
-models = db["Models"]
+models = db["DModels"]
 
 
 def read_models():
     """Retrieves all models from the database."""
-    models = list(db["Models"].find())
+    models = list(db["DModels"].find())
     return models
 
 
