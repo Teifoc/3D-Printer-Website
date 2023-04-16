@@ -4,6 +4,7 @@ import io
 import gzip
 #import secret as s
 import random
+from bson.objectid import ObjectId
 
 query = st.experimental_get_query_params()
 
@@ -35,7 +36,7 @@ if not model_id:
 
 model_id = model_id[0]
 
-from bson.objectid import ObjectId
+
 
 object_id = ObjectId(model_id)
 

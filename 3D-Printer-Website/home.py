@@ -135,7 +135,7 @@ for row_index in range(num_rows):
                     st.text("Time: {}".format(model["printTime"]) +" hour(s)")
 
                     
-                    url = "http://localhost:8501/Detail_view?id={}".format(str(model['_id']))
+                    url = "https://3d-printer-website.streamlit.app/Detail_view?id={}".format(str(model['_id']))
 
 
                     # Create a centered button with custom CSS
