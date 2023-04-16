@@ -45,7 +45,7 @@ object_id = ObjectId(model_id)
 db = pymongo.MongoClient(st.secrets["db_link"]).Website
 
 # Retrieve the model data from the database
-model_data = db.Model.find_one({'_id':object_id})
+model_data = db.Models.find_one({'_id':object_id})
 
 if not model_data:
     st.error("Model not found in database.")
