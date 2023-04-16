@@ -127,10 +127,10 @@ if confirm_order:
         # st.download_button(label="Download token", data=token_file, file_name=f"order_token_{result.inserted_id}.txt", mime="text/plain")
         
         # Define the additional information
-        additional_info = f"{result.inserted_id}\t--> order ID\n\nThis is a important information. You will need the order ID and the token to delete the order form the list of print jobs on the page 'Queue'."
+        additional_info = f"{result.inserted_id} --> order ID\n\nThis is a important information. You will need the order ID and the token to delete the order from the list of print jobs on the page 'Queue' if necessary.."
         
         # Append the additional information to the token_str
-        token_str += "\t--> token \n" + additional_info
+        token_str += " --> token \n" + additional_info
         
         # Encode the token_str and create the token_file
         token_bytes = token_str.encode('utf-8')
@@ -141,7 +141,7 @@ if confirm_order:
         
 
         # Add an explanation of the token's purpose
-        st.info("Please download the token above. You will need it to delete the order from the list of print jobs if necessary.")
+        st.info("Please download the token above. You will need the order ID and the token to delete the order from the list of print jobs on the page 'Queue' if necessary.")
 else:
     form.form_submit_button("Confirm", help="Click here to buy the selected material")
 
