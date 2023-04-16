@@ -116,7 +116,7 @@ if confirm_order:
         st.experimental_set_query_params()
 
         # Display the token to the user
-        st.success("Order created successfully with Order ID: {} and Token: {}".format(result.inserted_id, token_str))
+        st.success("Order created successfully with Order ID: {}".format(result.inserted_id))
 
         # Provide a way for the user to download the token
         token_bytes = token_str.encode('utf-8')

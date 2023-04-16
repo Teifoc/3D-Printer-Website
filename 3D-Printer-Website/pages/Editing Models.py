@@ -4,6 +4,7 @@ import secret as s
 import gzip
 import io
 from bson import ObjectId
+import random
 
 #TODO: Token-Logik auch hier noch ergänzen (vgl. Detail view)
 
@@ -11,6 +12,12 @@ from bson import ObjectId
 client = s.client
 db = client["Website"]
 models = db["Models"]
+
+# Generate a random 4-digit token
+token = random.randint(1000, 9999)
+
+# Convert the token to a string
+token_str = str(token)
 
 def create_model(name, description, picture, stl_file, price, print_time):
     """Creates a new model in the database."""
@@ -26,6 +33,12 @@ def create_model(name, description, picture, stl_file, price, print_time):
             compressed_stl_file = gzip.compress(stl_file.read())
         except AttributeError:
             raise ValueError("Please select both a picture and an STL file to upload.")
+        
+        # # Generate a random 4-digit token
+        # token = random.randint(1000, 9999)
+        #
+        # # Convert the token to a string
+        # token_str = str(token)
     
         model = {
             "name": name,
@@ -33,7 +46,8 @@ def create_model(name, description, picture, stl_file, price, print_time):
             "picture": compressed_picture,
             "stlFile": compressed_stl_file,
             "price": price,
-            "printTime": print_time
+            "printTime": print_time,
+            "token": token_str
         }
         
         result = models.insert_one(model)
@@ -108,10 +122,21 @@ def update_model(model_id, name=None, description=None, picture=None, stl_file=N
 
 
 
-def delete_model(model_id):
+def delete_model(model_id, token):
     """Deletes an existing model from the database."""
-    result = models.delete_one({"_id": ObjectId(model_id)})
-    return result.deleted_count
+    model = models.find_one({"_id": ObjectId(model_id)})
+    if model is None:
+        raise ValueError("Model not found.")
+    if token == model["token"]:
+        result = models.delete_one({"_id": ObjectId(model_id)})
+        if result.deleted_count == 1:
+            return "Model successfully deleted."
+        else:
+            raise ValueError("An error occurred while deleting the model.")
+    else:
+        raise ValueError("Incorrect token.")
+
+
 
 
 # Define the Streamlit app
@@ -128,11 +153,19 @@ def app():
     price = st.number_input("Price in €")
     print_time = st.number_input("Print time in hours")
 
-    if st.button("Create"):
+    if st.button("Create", key="create"):
         picture_file = io.BytesIO(picture.read())
         stl_file_obj = io.BytesIO(stl_file.read())
         created_model = create_model(name, description, picture_file, stl_file_obj, price, print_time)
         st.success(f"Model '{created_model['name']}' created successfully.")
+        
+        # Provide a way for the user to download the token
+        token_bytes = token_str.encode('utf-8')
+        token_file = io.BytesIO(token_bytes)
+        st.download_button(label="Download token", data=token_file, file_name=f"model_token_{created_model['name']}_{created_model['_id']}.txt", mime="text/plain", key="download_token")
+
+        # Add an explanation of the token's purpose
+        st.info("Please download the token above. You will need it to delete the model from the list of models if you want.")
 
     # Show a list of all models
     st.header("List of models")
@@ -165,9 +198,16 @@ def app():
         #         update_model(model["_id"], edit_name, edit_description, picture, stl_file, edit_price, edit_print_time)
         #         st.success(f"Model '{model['name']}' updated successfully.")
 
-        if st.button("Delete", key=f"delete button {model['_id']}"):
-            delete_model(model["_id"])
-            st.success(f"Model '{model['name']}' deleted successfully.")
+        if st.button("Delete Model", key=f"delete_{model_id}"):
+            token_input = st.text_input("Please enter the token to confirm:", type="password")
+            if token_input:
+                try:
+                    result = delete_model(model["_id"], token_input)
+                    st.success(result)
+                    model = None
+                except ValueError as e:
+                    st.error(str(e))
+
 
 app()
 
