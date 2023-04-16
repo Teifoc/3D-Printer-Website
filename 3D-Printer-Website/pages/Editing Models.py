@@ -157,10 +157,10 @@ def create_model_site():
         
         tokenStr = token_str
         
-        # Provide a way for the user to download the token
-        token_bytes = token_str.encode('utf-8')
-        token_file = io.BytesIO(token_bytes)
-        st.download_button(label="Download token", data=token_file, file_name=f"model_token_{created_model['name']}_{created_model['_id']}.txt", mime="text/plain", key="download_token")
+        # # Provide a way for the user to download the token
+        # token_bytes = token_str.encode('utf-8')
+        # token_file = io.BytesIO(token_bytes)
+        # st.download_button(label="Download token", data=token_file, file_name=f"model_token_{created_model['name']}_{created_model['_id']}.txt", mime="text/plain", key="download_token")
 
 
         # Define the additional information
