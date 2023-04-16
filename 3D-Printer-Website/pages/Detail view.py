@@ -127,7 +127,7 @@ if confirm_order:
         # st.download_button(label="Download token", data=token_file, file_name=f"order_token_{result.inserted_id}.txt", mime="text/plain")
         
         # Define the additional information
-        additional_info = f"{result.inserted_id} --> order ID\n\nThis is a important information. You will need the order ID and the token to delete the order from the list of print jobs on the page 'Queue' if necessary.."
+        additional_info = f"{result.inserted_id} --> order ID\n\nThis is a important information. You will need the order ID and the token to delete the order from the list of print jobs on the page 'Queue' if necessary."
         
         # Append the additional information to the token_str
         token_str += " --> token \n" + additional_info
