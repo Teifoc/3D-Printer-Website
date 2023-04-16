@@ -155,7 +155,7 @@ def create_model_site():
         created_model = create_model(name, description, picture_file, stl_file_obj, price, print_time)
         st.success(f"Model '{created_model['name']}' created successfully.")
         
-        token_str = token_str
+        tokenStr = token_str
         
         # Provide a way for the user to download the token
         token_bytes = token_str.encode('utf-8')
@@ -167,10 +167,10 @@ def create_model_site():
         additional_info = f"This is a important information. You will need the token to delete the model '{created_model['name']}' from the list of models if you want."
         
         # Append the additional information to the token_str
-        token_str += " --> token \n" + additional_info
+        tokenStr += " --> token \n" + additional_info
         
         # Encode the token_str and create the token_file
-        token_bytes = token_str.encode('utf-8')
+        token_bytes = tokenStr.encode('utf-8')
         token_file = io.BytesIO(token_bytes)
 
         # Download the token file with the additional information
