@@ -43,7 +43,7 @@ else:
     # Add a text input for the user to enter the order number to delete
     order_to_delete = st.text_input("Enter the order ID to delete:")
     # Add a text input for the user to enter the random code
-    token = st.text_input("Enter the token:")
+    token = st.text_input("Enter the token:", type="password")
     
     # Add a button to initiate the deletion process
     if st.button("Delete order"):
