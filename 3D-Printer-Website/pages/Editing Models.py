@@ -12,7 +12,7 @@ client = pymongo.MongoClient(st.secrets["db_link"])
 
 #client = s.client 
 db = client["Website"]
-models = db["Models"]
+models = db["Model"]
 
 # Generate a random 4-digit token
 token = random.randint(1000, 9999)
@@ -47,20 +47,20 @@ def create_model(name, description, picture, stl_file, price, print_time):
             "token": token_str
         }
         
-        result = models.insert_one(model)
-        created_model = models.find_one({"_id": result.inserted_id})
+        result = model.insert_one(model)
+        created_model = model.find_one({"_id": result.inserted_id})
         return created_model
 
 
 
 def read_models():
     """Retrieves all models from the database."""
-    return list(models.find())
+    return list(model.find())
 
 
 def update_model(model_id, name=None, description=None, picture=None, stl_file=None, price=None, print_time=None):
     """Updates an existing model in the database."""
-    model = models.find_one({"_id": ObjectId(model_id)})
+    model = model.find_one({"_id": ObjectId(model_id)})
     new_values = {"name": model["name"], "description": model["description"], "picture": model["picture"], "stlFile": model["stlFile"], "price": model["price"], "printTime": model["printTime"]}
     if name is not None:
         new_values["name"] = name

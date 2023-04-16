@@ -88,7 +88,7 @@ st.subheader("Models Overview")
 client = pymongo.MongoClient(st.secrets["db_link"])
 #client = s.client
 db = client["Website"]
-models = db["Models"]
+models = db["Model"]
 
 
 def read_models():
