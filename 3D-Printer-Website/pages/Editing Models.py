@@ -4,21 +4,55 @@ import secret as s
 import gzip
 import io
 from bson import ObjectId
+import random
+
+#TODO: Token-Logik auch hier noch ergänzen (vgl. Detail view)
 
 # Connect to the MongoDB database
 client = s.client
 db = client["Website"]
 models = db["Models"]
 
+# Generate a random 4-digit token
+token = random.randint(1000, 9999)
+
+# Convert the token to a string
+token_str = str(token)
+
 def create_model(name, description, picture, stl_file, price, print_time):
     """Creates a new model in the database."""
-    compressed_picture = gzip.compress(picture.read())
-    compressed_stl_file = gzip.compress(stl_file.read())
-    model = {"name": name, "description": description, "picture": compressed_picture, "stlFile": compressed_stl_file, "price": price, "printTime": print_time}
-    result = models.insert_one(model)
-    created_model = models.find_one({"_id": result.inserted_id})
-    return created_model
-
+    if not picture or not stl_file:
+        raise ValueError("Please select both a picture and an STL file to upload.")
+    
+    if not name or not description or not price or not print_time:
+        raise ValueError("All fields of the form must be filled out to submit the form.")
+    
+    if name and description and picture and stl_file and price and print_time:
+        try:
+            compressed_picture = gzip.compress(picture.read())
+            compressed_stl_file = gzip.compress(stl_file.read())
+        except AttributeError:
+            raise ValueError("Please select both a picture and an STL file to upload.")
+        
+        # # Generate a random 4-digit token
+        # token = random.randint(1000, 9999)
+        #
+        # # Convert the token to a string
+        # token_str = str(token)
+    
+        model = {
+            "name": name,
+            "description": description,
+            "picture": compressed_picture,
+            "stlFile": compressed_stl_file,
+            "price": price,
+            "printTime": print_time,
+            "token": token_str
+        }
+        
+        result = models.insert_one(model)
+        created_model = models.find_one({"_id": result.inserted_id})
+        return created_model
 
 
 
@@ -88,14 +122,26 @@ def update_model(model_id, name=None, description=None, picture=None, stl_file=N
 
 
 
-def delete_model(model_id):
+def delete_model(model_id, token):
     """Deletes an existing model from the database."""
-    result = models.delete_one({"_id": ObjectId(model_id)})
-    return result.deleted_count
+    model = models.find_one({"_id": ObjectId(model_id)})
+    if model is None:
+        raise ValueError("Model not found.")
+    if token == model["token"]:
+        result = models.delete_one({"_id": ObjectId(model_id)})
+        if result.deleted_count == 1:
+            return "Model successfully deleted."
+        else:
+            raise ValueError("An error occurred while deleting the model.")
+    else:
+        raise ValueError("Incorrect token.")
+
+
 
 
 # Define the Streamlit app
 def create_model_site():
+
 
     # Show a form to create a new model
     st.header("Create a new model")
@@ -106,44 +152,64 @@ def create_model_site():
     price = st.number_input("Price in €")
     print_time = st.number_input("Print time in hours")
 
-    if st.button("Create"):
+    if st.button("Create", key="create"):
         picture_file = io.BytesIO(picture.read())
         stl_file_obj = io.BytesIO(stl_file.read())
         created_model = create_model(name, description, picture_file, stl_file_obj, price, print_time)
         st.success(f"Model '{created_model['name']}' created successfully.")
+        
+        # Provide a way for the user to download the token
+        token_bytes = token_str.encode('utf-8')
+        token_file = io.BytesIO(token_bytes)
+        st.download_button(label="Download token", data=token_file, file_name=f"model_token_{created_model['name']}_{created_model['_id']}.txt", mime="text/plain", key="download_token")
+
+        # Add an explanation of the token's purpose
+        st.info("Please download the token above. You will need it to delete the model from the list of models if you want.")
 
 
 def edit_models_site():
     # Show a list of all models
     st.header("List of models")
-    model_list = read_models()
+    with st.spinner("Loading List of Models from Database..."):
+     model_list = list(read_models())
+    
+    
+    
     for model in model_list:
         st.write(f"**{model['name']}**: {model['description']}")
-        st.write(f"Price: ${model['price']} €, Print time: {model['printTime']} hour(s).")
-        with st.expander("Edit"):
-            edit_name = st.text_input("Name", model["name"])
-            edit_description = st.text_area("Description", model["description"])
-            edit_picture = st.file_uploader("Upload a new picture of the model", key="edit_picture_" + str(model["_id"]))
-            edit_stl_file = st.file_uploader("Upload a new STL file", key="edit_stl_file_"+ str(model["_id"]))
-            edit_price = st.number_input("Price in €", value=float(model['price']), key=f"price_{model['_id']}")
-            edit_print_time = st.number_input("Print time in hours", value=float(model['printTime']), key=f"print_time_{model['_id']}")
+        st.write(f"Price: {model['price']} €, Print time: {model['printTime']} hour(s).")
+        # with st.expander("Edit"):
+        #     edit_name = st.text_input("Name", model["name"])
+        #     edit_description = st.text_area("Description", model["description"])
+        #     edit_picture = st.file_uploader("Upload a new picture of the model", key="edit_picture_" + str(model["_id"]))
+        #     edit_stl_file = st.file_uploader("Upload a new STL file", key="edit_stl_file_"+ str(model["_id"]))
+        #     edit_price = st.number_input("Price in €", value=float(model['price']), key=f"price_{model['_id']}")
+        #     edit_print_time = st.number_input("Print time in hours", value=float(model['printTime']), key=f"print_time_{model['_id']}")
+        #
+        #
+        #     if st.button("Update", key=f"update button {model['_id']}"):
+        #         if edit_picture is not None:
+        #             picture = edit_picture.read()
+        #         else:
+        #             picture = model["picture"]
+        #         if edit_stl_file is not None:
+        #             stl_file = edit_stl_file.read()
+        #         else:
+        #             stl_file = model["stlFile"]
+        #         update_model(model["_id"], edit_name, edit_description, picture, stl_file, edit_price, edit_print_time)
+        #         st.success(f"Model '{model['name']}' updated successfully.")
 
+        if st.button("Delete Model", key=f"delete_{model['_id']}"):
+            token_input = st.text_input("Please enter the token to confirm:", type="password")
+            if token_input:
+                try:
+                    #result = delete_model(model["_id"])
+                    result = b.Models.delete_one({"_id": model["_id"], "token": token_input})
+                    st.success(result)
+                    model = None
+                except ValueError as e:
+                    st.error(str(e))
 
-            if st.button("Update", key=f"update button {model['_id']}"):
-                if edit_picture is not None:
-                    picture = edit_picture.read()
-                else:
-                    picture = model["picture"]
-                if edit_stl_file is not None:
-                    stl_file = edit_stl_file.read()
-                else:
-                    stl_file = model["stlFile"]
-                update_model(model["_id"], edit_name, edit_description, picture, stl_file, edit_price, edit_print_time)
-                st.success(f"Model '{model['name']}' updated successfully.")
-
-        if st.button("Delete", key=f"delete button {model['_id']}"):
-            delete_model(model["_id"])
-            st.success(f"Model '{model['name']}' deleted successfully.")
 
 
 

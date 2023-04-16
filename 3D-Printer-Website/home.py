@@ -1,29 +1,5 @@
 import streamlit as st
 
-#  @Fabian: nach updaten eines Modells tritt die folgende Fehlermeldung auf:
-# UnidentifiedImageError: cannot identify image file <_io.BytesIO object at 0x000002232  [Titel anhand dieser ISBN in Citavi-Projekt übernehmen]  [Titel anhand dieser ISBN in Citavi-Projekt übernehmen] D4B4180>
-# Traceback:
-#
-# File "C:\Users\Maxka\AppData\Local\Programs\Python\Python310\lib\site-packages\streamlit\runtime\scriptrunner\script_runner.py", line 565, in _run_script
-#     exec(code, module.__dict__)
-# File "C:\Users\Maxka\git\3D-Printer-Website\3D-Printer-Website\home.py", line 125, in <module>
-#     st.image(model_image, use_column_width=True)
-# File "C:\Users\Maxka\AppData\Local\Programs\Python\Python310\lib\site-packages\streamlit\runtime\metrics_util.py", line 311, in wrapped_func
-#     result = non_optional_func(*args, **kwargs)
-# File "C:\Users\Maxka\AppData\Local\Programs\Python\Python310\lib\site-packages\streamlit\elements\image.py", line 169, in image
-#     marshall_images(
-# File "C:\Users\Maxka\AppData\Local\Programs\Python\Python310\lib\site-packages\streamlit\elements\image.py", line 536, in marshall_images
-#     proto_img.url = image_to_url(
-# File "C:\Users\Maxka\AppData\Local\Programs\Python\Python310\lib\site-packages\streamlit\elements\image.py", line 416, in image_to_url
-#     image_format = _validate_image_format_string(image_data, output_format)
-# File "C:\Users\Maxka\AppData\Local\Programs\Python\Python310\lib\site-packages\streamlit\elements\image.py", line 217, in _validate_image_format_string
-#     pil_image = Image.open(io.BytesIO(image_data))
-# File "C:\Users\Maxka\AppData\Local\Programs\Python\Python310\lib\site-packages\PIL\Image.py", line 3283, in open
-#     raise UnidentifiedImageError(msg)
-#
-# Nach dem Löschen eines Modells aus der Datenbank funktiert der Reload ensprechend ohne Probleme...
-
-
 hide_streamlit_style = """
                 <style>
                 div[data-testid="stToolbar"] {
@@ -156,9 +132,8 @@ for row_index in range(num_rows):
                     st.text("Price: {}".format(model["price"]) +" €")
                     st.text("Time: {}".format(model["printTime"]) +" hour(s)")
 
-                    # @Max hier muss man noch den link zum detail view einfügen bei .format(model[0])
-                    url = "http://localhost:8501/Detail_view?site={}".format(model["name"])
-                    #url = "http://localhost:8501/Detail_view?site={}".format(str(model['_id']))
+                    
+                    url = "http://localhost:8501/Detail_view?id={}".format(str(model['_id']))
 
 
                     # Create a centered button with custom CSS
@@ -193,9 +168,10 @@ for row_index in range(num_rows):
                         </a>
                     ''',
                     unsafe_allow_html=True)
-                    
+       
                     like = st.form_submit_button("Like!", help="Click here to Like a Model")
                     if like:
                         st.success("You liked the model!")
                         # there is nothing happenig here yet
+
                         

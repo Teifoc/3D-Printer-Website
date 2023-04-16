@@ -3,10 +3,11 @@ import webbrowser
 import io
 import gzip
 import secret as s
+import random
 
 query = st.experimental_get_query_params()
 
-if len(query) == 0:
+if 'id' not in query:
     st.info("Please select a product first")
     st.info("Please go to the Homepage and select a product")
     st.info("https://3d-printer-website.streamlit.app")
@@ -27,39 +28,44 @@ if len(query) == 0:
     st.stop()
 
 # Retrieve the model name from the query parameters, with error handling
-model_name = query.get("site")
-if not model_name:
-    st.error("No model name specified in query parameters.")
+model_id = query.get("id")
+if not model_id:
+    st.error("No model ID specified in query parameters.")
     st.stop()
 
-model_name = model_name[0]
+model_id = model_id[0]
 
-st.title("Here you can get more info about the Product")
-st.header("Model Name: " + model_name)
+from bson.objectid import ObjectId
 
+object_id = ObjectId(model_id)
 
 # Connect to the MongoDB database
 db = s.client.Website
 
+# Retrieve the model data from the database
+model_data = db.Models.find_one({'_id':object_id})
+
+if not model_data:
+    st.error("Model not found in database.")
+    st.stop()
+
+model_name = model_data['name']
+
+st.title("Here you can get more info about the Product")
+st.header("Model Name: " + model_name)
 
 col_left, col_right = st.columns(2)
 
 # Retrieve the model image from the database
-model_data = db.Models.find_one({'name': model_name})
+model_binary_picture = model_data['picture']
+with gzip.GzipFile(fileobj=io.BytesIO(model_binary_picture)) as f:
+    model_image = f.read()
 
-if model_data:
-    model_binary_picture = model_data['picture']
-    with gzip.GzipFile(fileobj=io.BytesIO(model_binary_picture)) as f:
-        model_image = f.read()
-    
-    col_left.subheader("Product Image")
-    col_left.image(model_image, use_column_width=True)
-else:
-    st.error("Model image not found in database.")
-    st.stop()
+col_left.subheader("Product Image")
+col_left.image(model_image, use_column_width=True)
 
 description = model_data['description']
-    
+
 st.subheader("Details of Printing")
 # Retrieve printtime and price data from the database
 printtime = model_data['printTime']
@@ -67,7 +73,6 @@ price = model_data['price']
 st.text("Time: {}".format(printtime) +" hour(s)")
 st.text("Price for the model: {}".format(price) +" € / pc")
 st.text("Description: {}".format(description))
-
 
 st.subheader("Optional parameters")
 # Creating form for the ordering process
@@ -81,15 +86,17 @@ color_picker = form.color_picker("Pick a color")
 quantity = form.number_input("Quantity", min_value=1, max_value=100, value=1, help="Select the number of quantity")
 infill = form.number_input("Infill", 0, 100, 1, help="Select here the percentage of the infill (values from 0 to 100 % are allowed)")
 
-# Set default values
-url_yes = "https://3d-printer-website.streamlit.app/Editing_Models"
-url_no = "https://3d-printer-website.streamlit.app/"
-
-# Add checkbox input fields for "Yes" and "No" options
-confirm_order = form.checkbox("Yes, I want to continue ordering.", key="confirm_order")
+# Add checkbox to confirm the ordering
+confirm_order = form.checkbox("Yes, I want to continue ordering.", key="confirm_order")             
 
 if confirm_order:
     if form.form_submit_button("Confirm", help="Click here to buy the selected material"):
+
+        # Generate a random 4-digit token
+        token = random.randint(1000, 9999)
+
+        # Convert the token to a string
+        token_str = str(token)
 
         # Prepare data for the new document
         data = {
@@ -98,15 +105,34 @@ if confirm_order:
             'pieces': pieces,
             'color': color_picker,
             'quantity': quantity,
-            'infill': infill
+            'infill': infill,
+            'token': token_str  # Add the token to the data
         }
-        
 
         # Insert the new document into the collection
         result = db.Orders.insert_one(data)
 
-        # Print success message with the inserted ID
-        st.success("Order created successfully with ID: {}".format(result.inserted_id))
+        # Remove the 'id' parameter from the URL
+        st.experimental_set_query_params()
+
+        # Display the token to the user
+        st.success("Order created successfully with Order ID: {}".format(result.inserted_id))
+
+        # Provide a way for the user to download the token
+        token_bytes = token_str.encode('utf-8')
+        token_file = io.BytesIO(token_bytes)
+        st.download_button(label="Download token", data=token_file, file_name=f"order_token_{result.inserted_id}.txt", mime="text/plain")
+
+        # Add an explanation of the token's purpose
+        st.info("Please download the token above. You will need it to delete the order from the list of print jobs if necessary.")
 else:
     form.form_submit_button("Confirm", help="Click here to buy the selected material")
+
+
+
+
+
+
+
+
 
