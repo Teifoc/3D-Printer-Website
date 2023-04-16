@@ -159,6 +159,21 @@ def create_model_site():
         token_file = io.BytesIO(token_bytes)
         st.download_button(label="Download token", data=token_file, file_name=f"model_token_{created_model['name']}_{created_model['_id']}.txt", mime="text/plain", key="download_token")
 
+
+        # Define the additional information
+        additional_info = f"This is a important information. You will need the token to delete the model '{created_model['name']}' from the list of models if you want."
+        
+        # Append the additional information to the token_str
+        token_str += " --> token \n" + additional_info
+        
+        # Encode the token_str and create the token_file
+        token_bytes = token_str.encode('utf-8')
+        token_file = io.BytesIO(token_bytes)
+
+        # Download the token file with the additional information
+        st.download_button(label="Download token", data=token_file, file_name=f"model_token_{created_model['name']}_{created_model['_id']}.txt", mime="text/plain")
+
+
         # Add an explanation of the token's purpose
         st.info("Please download the token above. You will need it to delete the model from the list of models if you want.")
 
