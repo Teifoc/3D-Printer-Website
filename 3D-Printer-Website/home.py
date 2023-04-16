@@ -1,4 +1,7 @@
 import streamlit as st
+import io
+import gzip
+import pymongo
 
 hide_streamlit_style = """
                 <style>
@@ -63,9 +66,7 @@ def hide_anchor_link():
 hide_anchor_link()
 
 #import secret as s
-import io
-import gzip
-import pymongo
+
 
 
 
