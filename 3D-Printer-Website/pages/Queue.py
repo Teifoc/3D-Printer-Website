@@ -68,32 +68,3 @@ else:
                 df = df[df.index != order_id]
                 st.dataframe(df)
 
-                
-                
-                
-                
-     # Add a text input for the user to enter the order number to delete
-    # order_to_delete = st.text_input("Enter the order ID to delete:")
-    #
-    # # Add a button to initiate the deletion process
-    # if st.button("Delete order"):
-    #     try:
-    #         # Convert the user input order number to an ObjectId
-    #         order_id = ObjectId(order_to_delete)
-    #     except ValueError:
-    #         st.warning(f"{order_to_delete} is not a valid order ID.")
-    #     else:
-    #         # Find the order with the given order number in the collection
-    #         result = collection.find_one({"_id": order_id})
-    #
-    #         if result is None:
-    #             st.warning(f"No order found with order ID {order_to_delete}.")
-    #         else:
-    #             # Delete the order from the collection
-    #             collection.delete_one({"_id": order_id})
-    #             st.success(f"Order {order_to_delete} deleted from the database.")
-    #
-    #             # Filter the DataFrame to exclude the deleted order
-    #             df = df[df.index != order_id]
-    #             st.dataframe(df)
-
