@@ -1,2 +1,2 @@
 # 3D-Printer-Website
-This website mages a 3D Printer. 
+This website makes a 3D Printer. 
